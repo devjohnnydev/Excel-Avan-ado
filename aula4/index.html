@@ -1,0 +1,47 @@
+﻿<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aula 4: Formatação Condicional e Validação — Braga Treinamentos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Lexend:wght@300;400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{--bg:#0f1a1a;--ink:#e3eeeb;--accent:#4cc2ae;--muted:#9db2ae;--line:#2a3a38;--gold:#f5c518;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Lexend","Segoe UI",system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}
+.card{max-width:580px;width:100%;text-align:center;display:grid;gap:22px}
+.badge{display:inline-flex;align-items:center;gap:10px;background:#172221;border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:0 auto}
+.num-big{font-family:"Bricolage Grotesque",system-ui;font-size:5rem;font-weight:800;color:var(--line);line-height:1;letter-spacing:-.04em}
+h1{font-family:"Bricolage Grotesque",system-ui;font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:800;line-height:1.1;letter-spacing:-.02em}
+.sub{font-size:1rem;color:var(--muted);line-height:1.6;max-width:44ch;margin:0 auto}
+.countdown{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.unit{background:#172221;border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:66px}
+.cnum{font-family:"Bricolage Grotesque",system-ui;font-size:2rem;font-weight:800;color:var(--accent);line-height:1}
+.clbl{font-family:"JetBrains Mono",monospace;font-size:.62rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-top:3px}
+.links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.back{display:inline-flex;align-items:center;gap:7px;color:var(--muted);text-decoration:none;font-size:.88rem;background:#172221;border:1px solid var(--line);border-radius:8px;padding:9px 16px;transition:color .2s,border-color .2s}
+.back:hover{color:var(--accent);border-color:var(--accent)}
+.plat a{color:var(--gold);text-decoration:none;font-weight:600}
+.plat a:hover{text-decoration:underline}
+.plat{font-size:.82rem;color:var(--muted)}
+</style></head><body>
+<div class="card">
+  <div class="badge">🎓 Braga Treinamentos · Excel Avançado</div>
+  <div class="num-big">04</div>
+  <h1>Formatação Condicional e Validação</h1>
+  <p class="sub">Deixe a planilha inteligente: cor automática e dados no controle</p>
+  <div class="countdown">
+    <div class="unit"><div class="cnum" id="d">--</div><div class="clbl">Dias</div></div>
+    <div class="unit"><div class="cnum" id="h">--</div><div class="clbl">Horas</div></div>
+    <div class="unit"><div class="cnum" id="m">--</div><div class="clbl">Min</div></div>
+    <div class="unit"><div class="cnum" id="s">--</div><div class="clbl">Seg</div></div>
+  </div>
+  <p class="plat">Esta aula será liberada em breve · <a href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener">bragatreinamentos.com.br</a></p>
+  <div class="links">
+    <a class="back" href="../">← Todas as aulas</a>
+    <a class="back" href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener">🌐 Plataforma</a>
+  </div>
+</div>
+<script>
+var target=new Date(2026,10,1,8,0,0);
+function tick(){var now=new Date(),diff=target-now;if(diff<=0){document.querySelector('.countdown').innerHTML='<p style="color:var(--accent);font-size:1.2rem;font-weight:700">A aula começa agora! 🎉</p>';return;}var d=Math.floor(diff/864e5),h=Math.floor((diff%864e5)/36e5),m=Math.floor((diff%36e5)/6e4),s=Math.floor((diff%6e4)/1e3);document.getElementById('d').textContent=String(d).padStart(2,'0');document.getElementById('h').textContent=String(h).padStart(2,'0');document.getElementById('m').textContent=String(m).padStart(2,'0');document.getElementById('s').textContent=String(s).padStart(2,'0');}
+tick();setInterval(tick,1000);
+</script>
+</body></html>
