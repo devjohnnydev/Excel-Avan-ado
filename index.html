@@ -45,6 +45,25 @@ h1{font-family:"Bricolage Grotesque",system-ui;font-size:clamp(2.2rem,5vw,3.6rem
 .cta-btn:hover{background:#e0b014;transform:translateY(-2px)}
 footer{text-align:center;padding-top:40px;font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);margin-top:48px}
 footer a{color:var(--gold);text-decoration:none}
+/* Lock Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(5,10,9,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px;z-index:100;opacity:0;pointer-events:none;transition:opacity 0.3s ease}
+.modal-overlay.active{opacity:1;pointer-events:auto}
+.modal{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:32px;width:100%;max-width:400px;text-align:center;box-shadow:0 24px 48px rgba(0,0,0,0.4);transform:translateY(20px);transition:transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275)}
+.modal-overlay.active .modal{transform:translateY(0)}
+.modal-icon{width:64px;height:64px;background:var(--accent-soft);color:var(--accent);border-radius:50%;display:grid;place-items:center;margin:0 auto 20px;font-size:28px}
+.modal h3{font-family:"Bricolage Grotesque",system-ui;font-size:1.5rem;font-weight:800;margin-bottom:8px;color:var(--ink)}
+.modal p{color:var(--muted);font-size:0.95rem;line-height:1.5;margin-bottom:24px}
+.modal-input{width:100%;background:#0a1210;border:2px solid var(--line);color:var(--ink);font-family:"JetBrains Mono",monospace;font-size:1.1rem;padding:14px;border-radius:12px;text-align:center;outline:none;transition:border-color 0.2s}
+.modal-input:focus{border-color:var(--accent)}
+.modal-input::placeholder{color:#4a5c58;font-family:"Lexend",sans-serif;font-size:0.95rem}
+.modal-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:14px;border-radius:12px;font-family:"Lexend",sans-serif;font-weight:700;font-size:1rem;margin-top:16px;cursor:pointer;transition:background 0.2s,transform 0.1s}
+.modal-btn:hover{background:#0a5a4f}
+.modal-btn:active{transform:scale(0.98)}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;transition:background 0.2s,color 0.2s}
+.modal-close:hover{background:var(--line);color:var(--ink)}
+.modal.error{animation:shake 0.4s cubic-bezier(.36,.07,.19,.97) both}
+.modal.error .modal-input{border-color:var(--mark);color:var(--mark)}
+@keyframes shake{10%,90%{transform:translate3d(-2px,0,0)}20%,80%{transform:translate3d(4px,0,0)}30%,50%,70%{transform:translate3d(-6px,0,0)}40%,60%{transform:translate3d(6px,0,0)}}
 </style></head><body>
 <div class="wrap">
 <header>
@@ -173,4 +192,89 @@ footer a{color:var(--gold);text-decoration:none}
   <p>© 2026 <a href="https://bragatreinamentos.com.br/" target="_blank">Braga Treinamentos</a> · Prof. Johnny Braga de Oliveira · Todos os direitos reservados</p>
 </footer>
 </div>
+
+<div class="modal-overlay" id="lockModal">
+  <div class="modal">
+    <button class="modal-close" id="closeModal" aria-label="Fechar">×</button>
+    <div class="modal-icon">🔒</div>
+    <h3 id="modalTitle">Aula Bloqueada</h3>
+    <p>Insira o código de acesso fornecido na aula para desbloquear este conteúdo.</p>
+    <input type="password" id="modalInput" class="modal-input" placeholder="Digite o código" autocomplete="off">
+    <button class="modal-btn" id="submitModal">Desbloquear Aula</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  // --- CONFIGURAÇÃO DAS SENHAS ---
+  // Troque as senhas aqui como preferir. Formato: 'pasta_da_aula/': 'senha'
+  const senhas = {
+    'aula5/': 'braga05',
+    'aula6/': 'braga06',
+    'aula10/': 'braga10'
+  };
+
+  const overlay = document.getElementById('lockModal');
+  const modal = overlay.querySelector('.modal');
+  const input = document.getElementById('modalInput');
+  const submitBtn = document.getElementById('submitModal');
+  const closeBtn = document.getElementById('closeModal');
+  const modalTitle = document.getElementById('modalTitle');
+  
+  let currentTargetUrl = '';
+  let currentAulaId = '';
+
+  // Intercepta os cliques nos cards disponíveis
+  document.querySelectorAll('.card.disponivel').forEach(card => {
+    card.addEventListener('click', function(e) {
+      const url = this.getAttribute('href');
+      
+      // Verifica se já foi desbloqueado nesta máquina
+      if(localStorage.getItem('unlocked_' + url) === 'true') {
+        return; // Deixa o link abrir normalmente
+      }
+      
+      // Bloqueia o link e abre o modal
+      e.preventDefault();
+      currentTargetUrl = url;
+      currentAulaId = this.querySelector('.card-num').textContent; // ex: "Aula 05"
+      
+      modalTitle.textContent = 'Desbloquear ' + currentAulaId;
+      input.value = '';
+      modal.classList.remove('error');
+      overlay.classList.add('active');
+      setTimeout(() => input.focus(), 100);
+    });
+  });
+
+  function close() {
+    overlay.classList.remove('active');
+    currentTargetUrl = '';
+  }
+
+  function attemptUnlock() {
+    const code = input.value.trim();
+    const correctCode = senhas[currentTargetUrl];
+
+    if(code === correctCode || correctCode === undefined) {
+      // Sucesso!
+      localStorage.setItem('unlocked_' + currentTargetUrl, 'true');
+      window.location.href = currentTargetUrl;
+    } else {
+      // Erro
+      modal.classList.remove('error');
+      void modal.offsetWidth; // trigger reflow para reiniciar animação
+      modal.classList.add('error');
+      input.focus();
+    }
+  }
+
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) close(); });
+  submitBtn.addEventListener('click', attemptUnlock);
+  input.addEventListener('keydown', function(e){ if(e.key === 'Enter') attemptUnlock(); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && overlay.classList.contains('active')) close(); });
+
+})();
+</script>
 </body></html>
