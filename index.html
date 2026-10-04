@@ -207,11 +207,21 @@ footer a{color:var(--gold);text-decoration:none}
 <script>
 (function(){
   // --- CONFIGURAÇÃO DAS SENHAS ---
-  // Troque as senhas aqui como preferir. Formato: 'pasta_da_aula/': 'senha'
+  // Senhas únicas para cada uma das 13 aulas
   const senhas = {
-    'aula5/': 'braga05',
-    'aula6/': 'braga06',
-    'aula10/': 'braga10'
+    'aula1/': 'BRAGA-XCL01',
+    'aula2/': 'BRAGA-XCL02',
+    'aula3/': 'BRAGA-XCL03',
+    'aula4/': 'BRAGA-XCL04',
+    'aula5/': 'BRAGA-XCL05',
+    'aula6/': 'BRAGA-XCL06',
+    'aula7/': 'BRAGA-XCL07',
+    'aula8/': 'BRAGA-XCL08',
+    'aula9/': 'BRAGA-XCL09',
+    'aula10/': 'BRAGA-XCL10',
+    'aula11/': 'BRAGA-XCL11',
+    'aula12/': 'BRAGA-XCL12',
+    'aula13/': 'BRAGA-XCL13'
   };
 
   const overlay = document.getElementById('lockModal');
@@ -224,8 +234,8 @@ footer a{color:var(--gold);text-decoration:none}
   let currentTargetUrl = '';
   let currentAulaId = '';
 
-  // Intercepta os cliques nos cards disponíveis
-  document.querySelectorAll('.card.disponivel').forEach(card => {
+  // Intercepta os cliques em TODOS os cards de aula
+  document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('click', function(e) {
       const url = this.getAttribute('href');
       
