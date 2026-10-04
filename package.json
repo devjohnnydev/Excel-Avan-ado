@@ -1,0 +1,12 @@
+﻿{
+  "name": "excel-avancado-braga",
+  "version": "1.0.0",
+  "description": "Aulas de Excel Avancado - Braga Treinamentos",
+  "scripts": {
+    "start": "npx serve . -p  --no-clipboard",
+    "dev": "npx serve . -p 5500"
+  },
+  "dependencies": {
+    "serve": "^14.2.3"
+  }
+}
