@@ -1,0 +1,133 @@
+﻿ID_Venda;Data;Vendedor;Região;Produto;Quantidade;Preço Unitário
+1001;04/01/2026;Ana Souza;SUDESTE;Headset Gamer;2;299,90
+1002;22/01/2026;  Bruno Lima ;SUDESTE;Webcam Full HD;1;259,00
+1003;17/01/2026;Ana Souza;SUDESTE;Monitor 27 pol;4;1.599,00
+1004;26/01/2026;Ana Souza;Sudeste;Webcam Full HD;3;259,00
+1005;25/01/2026;  Felipe Alves ;Nordeste;Mouse Sem Fio;4;89,90
+1006;20/01/2026;Elisa Prado;Nordeste;SSD 1TB;1;459,90
+1007;18/01/2026;Elisa Prado;nordeste;Cadeira Ergonômica;2;1.299,00
+1008;08/01/2026;Elisa Prado;Nordeste;Monitor 27 pol;1;1.599,00
+1009;27/01/2026;Felipe Alves;Nordeste;Caixa de Som BT;3;199,90
+1010;30/01/2026;Bruno Lima;SUDESTE;Teclado Mecânico;2;349,00
+1011;30/01/2026;Diego Rocha;sul ;Caixa de Som BT;1;199,90
+1012;11/01/2026;Gabriela Reis;centro-oeste ;Mouse Sem Fio;2;89,90
+1013;23/01/2026;Felipe Alves;Nordeste;SSD 1TB;4;459,90
+1014;05/01/2026;Elisa Prado;Nordeste;Monitor 27 pol;2;1.599,00
+1015;19/01/2026;Gabriela Reis;centro-oeste ;Monitor 27 pol;1;1.599,00
+1016;02/01/2026;Bruno Lima;Sudeste;Teclado Mecânico;4;349,00
+1017;20/01/2026;Hugo Martins; NORTE;HD Externo 2TB;1;549,00
+1018;29/01/2026;Elisa Prado;nordeste;Mouse Sem Fio;2;89,90
+1019;31/01/2026;Elisa Prado;Nordeste;HD Externo 2TB;1;549,00
+1020;21/01/2026;Diego Rocha;Sul;Caixa de Som BT;1;199,90
+1021;17/01/2026;  Ana Souza ;SUDESTE;Caixa de Som BT;5;199,90
+1022;29/01/2026;Elisa Prado;Nordeste;Notebook Pro 14;2;4.899,90
+1023;03/01/2026;  Hugo Martins ;Norte;HD Externo 2TB;1;549,00
+1024;18/01/2026;Carla Mendes;SUL;HD Externo 2TB;4;549,00
+1025;25/01/2026;Diego Rocha;sul ;Headset Gamer;4;299,90
+1026;15/01/2026;  Hugo Martins ;Norte;Monitor 27 pol;2;1.599,00
+;;;;;;
+1027;18/01/2026;  Diego Rocha ;sul ;Monitor 27 pol;1;1.599,00
+1028;08/01/2026;Bruno Lima;Sudeste;Caixa de Som BT;1;199,90
+1029;16/01/2026;Diego Rocha;sul ;Teclado Mecânico;5;349,00
+1030;14/01/2026;Diego Rocha;Sul;Mouse Sem Fio;4;89,90
+1031;28/01/2026;Ana Souza;SUDESTE;Mouse Sem Fio;1;89,90
+1032;28/01/2026;Bruno Lima;Sudeste;Monitor 27 pol;2;1.599,00
+1033;06/01/2026;Elisa Prado;nordeste;Monitor 27 pol;1;1.599,00
+1034;18/01/2026;Bruno Lima;Sudeste;HD Externo 2TB;1;549,00
+1035;28/01/2026;Diego Rocha;Sul;Webcam Full HD;5;259,00
+1036;29/01/2026;Ana Souza;Sudeste;Webcam Full HD;1;259,00
+1037;26/01/2026;Hugo Martins; NORTE;Webcam Full HD;5;259,00
+1038;31/01/2026;Ana Souza;SUDESTE;HD Externo 2TB;1;549,00
+1039;19/01/2026;Hugo Martins;Norte;Notebook Pro 14;1;4.899,90
+1040;03/01/2026;Diego Rocha;SUL;Mouse Sem Fio;2;89,90
+1041;03/01/2026;Gabriela Reis;centro-oeste ;Headset Gamer;2;299,90
+1042;09/01/2026;Gabriela Reis;Centro-Oeste;Headset Gamer;5;299,90
+1043;03/01/2026;  Ana Souza ; sudeste ;Cadeira Ergonômica;1;1.299,00
+1044;09/01/2026;Carla Mendes;SUL;Mouse Sem Fio;2;89,90
+1045;27/01/2026;Elisa Prado;Nordeste;HD Externo 2TB;2;549,00
+1046;29/01/2026;Carla Mendes;SUL;Mouse Sem Fio;1;89,90
+1047;10/01/2026;Diego Rocha;sul ;Caixa de Som BT;2;199,90
+1048;17/01/2026;Hugo Martins; NORTE;Notebook Pro 14;1;4.899,90
+1049;02/01/2026;Ana Souza; sudeste ;Teclado Mecânico;2;349,00
+1050;23/01/2026;Gabriela Reis;Centro-Oeste;Mouse Sem Fio;1;89,90
+1051;05/01/2026;Ana Souza; sudeste ;Cadeira Ergonômica;1;1.299,00
+1052;12/01/2026;Ana Souza; sudeste ;Monitor 27 pol;2;1.599,00
+1053;18/01/2026;Gabriela Reis;Centro-Oeste;Monitor 27 pol;1;1.599,00
+1054;29/01/2026;Gabriela Reis;Centro-Oeste;Teclado Mecânico;3;349,00
+1055;22/01/2026;Diego Rocha;SUL;Teclado Mecânico;1;349,00
+1056;16/01/2026;Diego Rocha;Sul;SSD 1TB;3;459,90
+1057;08/01/2026;Diego Rocha;Sul;Monitor 27 pol;4;1.599,00
+1058;31/01/2026;Elisa Prado;nordeste;HD Externo 2TB;4;549,00
+1059;11/01/2026;Ana Souza;Sudeste;Headset Gamer;1;299,90
+1060;02/01/2026;Bruno Lima;SUDESTE;Webcam Full HD;3;259,00
+1061;20/01/2026;Bruno Lima; sudeste ;Cadeira Ergonômica;2;1.299,00
+1062;01/01/2026;Diego Rocha;SUL;Webcam Full HD;1;259,00
+1063;20/01/2026;Felipe Alves;Nordeste;Headset Gamer;2;299,90
+1064;23/01/2026;Elisa Prado;Nordeste;Monitor 27 pol;4;1.599,00
+1065;24/01/2026;Carla Mendes;sul ;Cadeira Ergonômica;2;1.299,00
+1066;10/01/2026;Elisa Prado;Nordeste;Webcam Full HD;3;259,00
+1067;07/01/2026;Hugo Martins;Norte;Mouse Sem Fio;2;89,90
+1068;11/01/2026;Bruno Lima;Sudeste;Headset Gamer;2;299,90
+1069;02/01/2026;Diego Rocha;SUL;Cadeira Ergonômica;1;1.299,00
+1070;19/01/2026;Diego Rocha;sul ;Webcam Full HD;5;259,00
+1071;23/01/2026;Ana Souza;Sudeste;Webcam Full HD;2;259,00
+1072;17/01/2026;Hugo Martins;Norte;HD Externo 2TB;2;549,00
+1073;05/01/2026;Hugo Martins; NORTE;SSD 1TB;4;459,90
+1074;29/01/2026;Carla Mendes;sul ;SSD 1TB;5;459,90
+1075;21/01/2026;Elisa Prado;nordeste;Monitor 27 pol;2;1.599,00
+1076;08/01/2026;  Elisa Prado ;nordeste;Caixa de Som BT;1;199,90
+1077;23/01/2026;Carla Mendes;sul ;Monitor 27 pol;1;1.599,00
+1078;15/01/2026;Gabriela Reis;Centro-Oeste;Monitor 27 pol;4;1.599,00
+1079;31/01/2026;  Ana Souza ;SUDESTE;Webcam Full HD;5;259,00
+1080;25/01/2026;Gabriela Reis;centro-oeste ;HD Externo 2TB;2;549,00
+1081;16/01/2026;Ana Souza; sudeste ;Caixa de Som BT;4;199,90
+1082;30/01/2026;Carla Mendes;sul ;HD Externo 2TB;1;549,00
+1083;22/01/2026;Ana Souza;Sudeste;Webcam Full HD;1;259,00
+1084;09/01/2026;Gabriela Reis;centro-oeste ;Monitor 27 pol;5;1.599,00
+1085;13/01/2026;Elisa Prado;nordeste;Headset Gamer;1;299,90
+1086;02/01/2026;Felipe Alves;Nordeste;Mouse Sem Fio;1;89,90
+1087;07/01/2026;  Ana Souza ;SUDESTE;Teclado Mecânico;2;349,00
+1088;19/01/2026;Diego Rocha;SUL;Headset Gamer;3;299,90
+1089;24/01/2026;Bruno Lima;Sudeste;Headset Gamer;1;299,90
+1090;19/01/2026;Gabriela Reis;centro-oeste ;Monitor 27 pol;1;1.599,00
+1091;08/01/2026;Bruno Lima;SUDESTE;Headset Gamer;1;299,90
+1092;02/01/2026;Felipe Alves;nordeste;Caixa de Som BT;1;199,90
+1093;28/01/2026;Gabriela Reis;centro-oeste ;Mouse Sem Fio;4;89,90
+1094;27/01/2026;Hugo Martins;Norte;Webcam Full HD;1;259,00
+1095;09/01/2026;Hugo Martins; NORTE;Webcam Full HD;2;259,00
+1096;30/01/2026;Bruno Lima; sudeste ;SSD 1TB;2;459,90
+1097;22/01/2026;Gabriela Reis;centro-oeste ;Notebook Pro 14;5;4.899,90
+1098;07/01/2026;Felipe Alves;nordeste;Caixa de Som BT;2;199,90
+1099;09/01/2026;Ana Souza;SUDESTE;Monitor 27 pol;1;1.599,00
+1100;18/01/2026;Diego Rocha;sul ;SSD 1TB;5;459,90
+;;;;;;
+1101;10/01/2026;Diego Rocha;SUL;Monitor 27 pol;2;1.599,00
+1102;18/01/2026;Felipe Alves;nordeste;HD Externo 2TB;3;549,00
+1103;10/01/2026;Elisa Prado;Nordeste;Mouse Sem Fio;2;89,90
+1104;31/01/2026;Carla Mendes;Sul;Monitor 27 pol;5;1.599,00
+1105;25/01/2026;Elisa Prado;Nordeste;Monitor 27 pol;2;1.599,00
+1106;01/01/2026;Carla Mendes;SUL;Notebook Pro 14;1;4.899,90
+1107;05/01/2026;Hugo Martins;Norte;Notebook Pro 14;2;4.899,90
+1108;06/01/2026;Ana Souza; sudeste ;SSD 1TB;1;459,90
+1109;03/01/2026;  Ana Souza ;Sudeste;Teclado Mecânico;2;349,00
+1110;18/01/2026;Gabriela Reis;Centro-Oeste;HD Externo 2TB;4;549,00
+1111;28/01/2026;Gabriela Reis;centro-oeste ;Cadeira Ergonômica;1;1.299,00
+1112;31/01/2026;Diego Rocha;sul ;Monitor 27 pol;2;1.599,00
+1113;06/01/2026;Bruno Lima;Sudeste;Notebook Pro 14;4;4.899,90
+1114;10/01/2026;Ana Souza;Sudeste;Headset Gamer;2;299,90
+1115;22/01/2026;Diego Rocha;SUL;Cadeira Ergonômica;2;1.299,00
+1116;21/01/2026;  Carla Mendes ;SUL;Teclado Mecânico;1;349,00
+1117;20/01/2026;Elisa Prado;nordeste;Mouse Sem Fio;5;89,90
+1118;31/01/2026;Elisa Prado;nordeste;SSD 1TB;1;459,90
+1119;24/01/2026;Felipe Alves;nordeste;Notebook Pro 14;1;4.899,90
+1120;28/01/2026;Ana Souza;SUDESTE;Headset Gamer;1;299,90
+1121;17/01/2026;Hugo Martins; NORTE;Teclado Mecânico;4;349,00
+1122;03/01/2026;Hugo Martins; NORTE;Webcam Full HD;3;259,00
+1123;06/01/2026;Felipe Alves;nordeste;SSD 1TB;2;459,90
+1124;25/01/2026;Ana Souza; sudeste ;Mouse Sem Fio;3;89,90
+1125;25/01/2026;Gabriela Reis;Centro-Oeste;HD Externo 2TB;5;549,00
+1126;12/01/2026;Hugo Martins; NORTE;Notebook Pro 14;2;4.899,90
+1127;10/01/2026;Hugo Martins; NORTE;Mouse Sem Fio;1;89,90
+1128;08/01/2026;Carla Mendes;SUL;HD Externo 2TB;1;549,00
+1129;27/01/2026;Bruno Lima; sudeste ;Mouse Sem Fio;1;89,90
+1130;17/01/2026;Elisa Prado;nordeste;SSD 1TB;5;459,90
