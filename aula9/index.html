@@ -1,47 +1,436 @@
-﻿<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aula 9: Gráficos Avançados e Sparklines — Braga Treinamentos</title>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Aula 09: Gráficos Avançados</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Lexend:wght@300;400;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Lexend:wght@300;400;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-:root{--bg:#0f1a1a;--ink:#e3eeeb;--accent:#4cc2ae;--muted:#9db2ae;--line:#2a3a38;--gold:#f5c518;color-scheme:dark}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--ink);font-family:"Lexend","Segoe UI",system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}
-.card{max-width:580px;width:100%;text-align:center;display:grid;gap:22px}
-.badge{display:inline-flex;align-items:center;gap:10px;background:#172221;border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:0 auto}
-.num-big{font-family:"Bricolage Grotesque",system-ui;font-size:5rem;font-weight:800;color:var(--line);line-height:1;letter-spacing:-.04em}
-h1{font-family:"Bricolage Grotesque",system-ui;font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:800;line-height:1.1;letter-spacing:-.02em}
-.sub{font-size:1rem;color:var(--muted);line-height:1.6;max-width:44ch;margin:0 auto}
-.countdown{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.unit{background:#172221;border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:66px}
-.cnum{font-family:"Bricolage Grotesque",system-ui;font-size:2rem;font-weight:800;color:var(--accent);line-height:1}
-.clbl{font-family:"JetBrains Mono",monospace;font-size:.62rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-top:3px}
-.links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.back{display:inline-flex;align-items:center;gap:7px;color:var(--muted);text-decoration:none;font-size:.88rem;background:#172221;border:1px solid var(--line);border-radius:8px;padding:9px 16px;transition:color .2s,border-color .2s}
-.back:hover{color:var(--accent);border-color:var(--accent)}
-.plat a{color:var(--gold);text-decoration:none;font-weight:600}
-.plat a:hover{text-decoration:underline}
-.plat{font-size:.82rem;color:var(--muted)}
-</style></head><body>
-<div class="card">
-  <div class="badge">🎓 Braga Treinamentos · Excel Avançado</div>
-  <div class="num-big">09</div>
-  <h1>Gráficos Avançados e Sparklines</h1>
-  <p class="sub">Comunique dados com gráficos combinados e mini-gráficos</p>
-  <div class="countdown">
-    <div class="unit"><div class="cnum" id="d">--</div><div class="clbl">Dias</div></div>
-    <div class="unit"><div class="cnum" id="h">--</div><div class="clbl">Horas</div></div>
-    <div class="unit"><div class="cnum" id="m">--</div><div class="clbl">Min</div></div>
-    <div class="unit"><div class="cnum" id="s">--</div><div class="clbl">Seg</div></div>
-  </div>
-  <p class="plat">Esta aula será liberada em breve · <a href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener">bragatreinamentos.com.br</a></p>
-  <div class="links">
-    <a class="back" href="../">← Todas as aulas</a>
-    <a class="back" href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener">🌐 Plataforma</a>
-  </div>
+/* Layout: um caderno de bordo — trilho de navegação por partes à esquerda, passos em fluxo vertical com print grande */
+:root{
+  --bg:#f3f6f5; --paper:#ffffff; --ink:#14302e; --muted:#566b68;
+  --accent:#0d6b5f; --accent-soft:#d8ece8; --mark:#d92b3a; --tip:#fff4d6; --tip-ink:#6a4a00; --line:#d5dfdc;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Lexend", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1716; --paper:#172221; --ink:#e3eeeb; --muted:#9db2ae;
+  --accent:#4cc2ae; --accent-soft:#1d3a35; --mark:#ff5d6a; --tip:#33290f; --tip-ink:#f4d58a; --line:#2a3a38; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1716; --paper:#172221; --ink:#e3eeeb; --muted:#9db2ae;
+  --accent:#4cc2ae; --accent-soft:#1d3a35; --mark:#ff5d6a; --tip:#33290f; --tip-ink:#f4d58a; --line:#2a3a38; color-scheme:dark}
+*{box-sizing:border-box} img{max-width:100%} .lightbox[hidden]{display:none}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.65;font-weight:300}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 80px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)} nav.rail{display:none}}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+strong{font-weight:600}
+header.hero{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center;padding-block:12px 8px}
+@media (max-width:900px){header.hero{grid-template-columns:minmax(0,1fr)}}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+header.hero h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;letter-spacing:-.02em;margin-block:8px 14px}
+header.hero p{max-width:60ch;margin:0 0 10px}
+.ticket{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:10px}
+.ticket img{border-radius:8px;border:1px solid var(--line);display:block}
+.ticket .cap{font-size:.85rem;color:var(--muted)}
+nav.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;font-size:.9rem;display:grid;gap:4px}
+nav.rail .label{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+nav.rail a{color:var(--ink);text-decoration:none;padding:6px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline}
+nav.rail a:hover,nav.rail a:focus-visible{background:var(--accent-soft);outline:none}
+nav.rail a span{font-family:var(--mono);color:var(--accent);font-size:.8rem}
+.progress{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.bar{height:8px;background:var(--accent-soft);border-radius:99px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+main{min-width:0;display:grid;gap:56px}
+section.why{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;display:grid;gap:14px}
+section.why h2{font-size:1.9rem}
+.reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.reasons div{border-top:3px solid var(--accent);padding-top:10px}
+.reasons h3{font-size:1.1rem;margin-bottom:4px}
+.reasons p{margin:0;font-size:.95rem}
+.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:.92rem;color:var(--muted)}
+.legend b{color:var(--mark);font-weight:600}
+.part{display:grid;gap:26px;scroll-margin-top:16px}
+.part-head{display:grid;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+.part-head .eyebrow{font-size:.8rem}
+.part-head h2{font-size:clamp(1.7rem,3.6vw,2.4rem);font-weight:800}
+.part-head p{margin:0;max-width:68ch}
+.step{display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;scroll-margin-top:16px}
+@media (max-width:600px){.step{grid-template-columns:minmax(0,1fr)}}
+.num{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--accent);line-height:1}
+.num small{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;color:var(--muted);font-weight:500;margin-top:4px}
+.body{min-width:0;display:grid;gap:12px}
+.body h3{font-size:1.35rem;font-weight:600}
+.body p{margin:0;max-width:70ch}
+.body ol.mini,.body ul.mini{margin:0;padding-left:1.3em;display:grid;gap:6px;max-width:70ch}
+kbd{font-family:var(--mono);font-size:.82em;background:var(--paper);border:1px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:1px 7px;white-space:nowrap}
+code,pre.formula{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);border-radius:6px;padding:2px 6px;overflow-wrap:anywhere}
+pre.formula{margin:0;padding:12px 14px;font-size:.95rem;overflow-x:auto;white-space:pre}
+figure{margin:0;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px}
+figure button{all:unset;cursor:zoom-in;display:block;border-radius:6px}
+figure button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+.tip{background:var(--tip);color:var(--tip-ink);border-radius:10px;padding:10px 14px;font-size:.93rem;max-width:70ch}
+.tip strong{font-weight:600}
+.done{display:inline-flex;align-items:center;gap:10px;font-size:.92rem;color:var(--muted);cursor:pointer;user-select:none;width:max-content}
+.done input{width:20px;height:20px;accent-color:var(--accent)}
+table.cmp{border-collapse:collapse;width:100%;font-size:.93rem;min-width:560px} table.cmp th,table.cmp td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top} table.cmp th{font-family:var(--display);font-weight:600} .tw{overflow-x:auto} .yes{color:var(--accent);font-weight:600} .no{color:var(--mark);font-weight:600} .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px} .rules ul{margin:0;padding-left:1.2em;display:grid;gap:6px} .rules h3{font-size:1.1rem;margin-bottom:6px}
+section.end{background:var(--ink);color:var(--bg);border-radius:16px;padding:28px;display:grid;gap:12px}
+section.end h2{font-size:1.9rem}
+section.end ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.lightbox{position:fixed;inset:0;background:rgba(5,12,11,.88);display:grid;place-items:center;padding:16px;z-index:10;cursor:zoom-out}
+.lightbox img{max-width:100%;max-height:100%;border-radius:8px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.prof-strip{display:flex;align-items:center;gap:12px;margin-top:18px;padding:10px 14px;background:var(--paper);border:1px solid var(--line);border-radius:12px;width:max-content;max-width:100%}
+.prof-strip img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #f5c518;flex-shrink:0}
+.prof-strip .pinfo{display:grid;gap:1px}
+.prof-strip .pname{font-family:var(--display);font-weight:700;font-size:.97rem;color:var(--ink)}
+.prof-strip .pplat{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;color:#b8920a;text-transform:uppercase}
+a.prof-strip{text-decoration:none;transition:box-shadow .18s,transform .15s}
+a.prof-strip:hover{box-shadow:0 4px 18px rgba(13,107,95,.18);transform:translateY(-1px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .prof-strip{border-color:#3a5040}}
+:root[data-theme="dark"] .prof-strip{border-color:#3a5040}
+.dl-btn{display:inline-flex;align-items:center;gap:9px;margin-top:16px;padding:11px 20px;background:var(--accent);color:#fff;font-family:var(--body);font-size:.93rem;font-weight:600;border-radius:10px;text-decoration:none;transition:background .18s,transform .15s;border:none;cursor:pointer}
+.dl-btn:hover{background:#0a5a4f;transform:translateY(-2px)}
+.dl-btn svg{flex-shrink:0}
+.dl-info{font-size:.78rem;color:var(--muted);margin-top:5px}
+</style>
+<div class="wrap">
+<header class="hero">
+<div>
+<div class="eyebrow">Excel · Aula 09 · Visualização de dados</div>
+<a class="prof-strip" href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener" title="Acessar a Plataforma Braga Treinamentos"><img src="img/professor.jpg" alt="Professor Johnny Braga"><div class="pinfo"><span class="pname">Prof. Johnny Braga de Oliveira</span><span class="pplat">🎓 Braga Treinamentos · clique para acessar a plataforma</span></div></a>
+<h1>Gráficos Avançados</h1>
+<p>Olá! Nesta aula você vai sair do gráfico simples e aprender dois recursos que deixam qualquer relatório com cara de profissional: o <strong>gráfico de combinação com eixo secundário</strong> e os <strong>minigráficos</strong>.</p>
+<p>Eu fiz tudo de verdade no Excel, com a planilha da agência de viagens, e tirei um print de <strong>cada passo</strong>. O <b style="color:var(--mark)">círculo vermelho</b> mostra onde você clica e o <b style="color:var(--mark)">retângulo vermelho</b> mostra o que você precisa olhar. Faça junto comigo, passo a passo.</p>
+<a class="dl-btn" href="Aula3_Agencia_Viagens.xlsx" download><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Baixar planilha da aula (.xlsx)</a>
+<div class="dl-info">📁 Aula3_Agencia_Viagens.xlsx · 228 KB · Excel 2016 ou superior</div>
+<div class="dl-info" style="margin-top:10px">🌐 Acesse mais aulas em <a href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none">bragatreinamentos.com.br</a></div>
 </div>
+<div class="ticket"><img src="img/a43.jpg" alt="Aba Graficos com o gráfico de combinação e os minigráficos prontos" loading="eager"><div class="cap">No fim da aula, a sua aba Graficos vai ficar assim: gráfico de combinação em cima e minigráficos por canal embaixo.</div></div>
+</header>
+<nav class="rail" aria-label="Partes da aula"><div class="label">Roteiro</div>
+<a href="#porque"><span>00</span>Antes de começar</a>
+<a href="#parte1"><span>01</span>Preparar a planilha</a>
+<a href="#parte2"><span>02</span>Criar o gráfico de colunas</a>
+<a href="#parte3"><span>03</span>Combinação com eixo secundário</a>
+<a href="#parte4"><span>04</span>Títulos e rótulos</a>
+<a href="#parte5"><span>05</span>Dados por canal</a>
+<a href="#parte6"><span>06</span>Minigráficos de linha</a>
+<a href="#parte7"><span>07</span>Minigráficos de coluna</a>
+<div class="progress"><div style="font-size:.85rem">Passos feitos: <strong id="cnt">0</strong> de 43</div><div class="bar"><i id="barfill"></i></div></div>
+</nav>
+<main>
+<section class="why" id="porque">
+<div class="eyebrow">Antes de clicar</div>
+<h2>Por que um gráfico “avançado”?</h2>
+<p>Você já sabe fazer gráfico de colunas. O problema aparece quando quer mostrar duas coisas de tamanhos muito diferentes no mesmo gráfico. O faturamento da agência está na casa dos <strong>R$ 500 mil</strong> por mês e a quantidade de vendas fica em torno de <strong>50</strong>. No mesmo eixo, a linha de vendas fica achatada no zero e não dá para ler nada. Hoje você vai resolver isso com o <strong>gráfico de combinação com eixo secundário</strong>.</p>
+<p>Depois você vai aprender os <strong>minigráficos</strong> (sparklines): gráficos do tamanho de uma célula, que mostram a tendência de cada linha da tabela sem ocupar espaço.</p>
+<div class="reasons">
+<div><h3>Combinação</h3><p>Colunas e linha juntas, cada uma com o seu eixo. Duas medidas, um gráfico só.</p></div>
+<div><h3>Eixo secundário</h3><p>Uma régua extra do lado direito para a série que tem números pequenos.</p></div>
+<div><h3>Minigráficos</h3><p>Um gráfico dentro de cada célula. Ótimo para comparar muitas linhas de uma vez.</p></div>
+<div><h3>Dados por fórmula</h3><p>Você monta o resumo com SOMASES e CONT.SES. Se a base mudar, o gráfico muda junto.</p></div>
+</div>
+<h2 style="font-size:1.5rem;margin-top:8px">O que você precisa</h2>
+<ul class="mini">
+<li>A planilha da agência (<strong>Aula3_Agencia_Viagens.xlsx</strong>) com a tabela <strong>tVendas</strong>.</li>
+<li>Excel 2016 ou mais novo (eu usei o Microsoft 365). No Excel Online também funciona.</li>
+<li>Saber o que é SOMASES (já vimos nas aulas anteriores).</li>
+</ul>
+<div class="legend"><span><b>◯ Círculo</b> = clique aqui</span><span><b>▭ Retângulo</b> = olhe com atenção</span></div>
+<p style="font-size:.92rem;color:var(--muted)">Toque em qualquer print para ver em tamanho grande. Marque “Fiz este passo” para acompanhar o seu progresso (fica salvo só no seu navegador).</p>
+</section>
+<section class="part" id="parte1"><div class="part-head"><div class="eyebrow">Parte 1 de 7</div><h2>Preparar a planilha</h2><p>Antes do gráfico você precisa de uma tabela pequena com um resumo por mês. Vamos criar uma aba nova só para isso, puxando os números da tabela tVendas com fórmulas.</p></div>
+<article class="step" id="passo1"><div class="num">1<small>PASSO</small></div><div class="body">
+<h3>Conheça a tabela tVendas</h3><p>Abra a planilha e clique na aba <strong>Vendas</strong>. Clique em qualquer célula da tabela e veja a guia <strong>Design da Tabela</strong>: o nome dela é <strong>tVendas</strong> (canto esquerdo, marcado).</p><p>Hoje você vai usar três colunas: <strong>Data_Venda</strong>, <strong>Valor_Venda</strong> e <strong>Status</strong> (marcadas). Só vamos contar as vendas <strong>Confirmadas</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 1"><img src="img/a01.jpg" alt="Print do passo 1: Conheça a tabela tVendas" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Antes de começar, salve uma cópia com <kbd>F12</kbd> (Salvar como). Eu salvei como “Aula 09 - Graficos Avancados”. Assim o arquivo original fica intacto.</div>
+<label class="done"><input type="checkbox" id="ok1" data-step="1"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo2"><div class="num">2<small>PASSO</small></div><div class="body">
+<h3>Crie uma aba nova</h3><p>Lá embaixo, clique no <strong>+</strong> (círculo) ao lado da última aba. Vai aparecer uma aba nova chamada <strong>Planilha1</strong> (retângulo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 2"><img src="img/a02.jpg" alt="Print do passo 2: Crie uma aba nova" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok2" data-step="2"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo3"><div class="num">3<small>PASSO</small></div><div class="body">
+<h3>Renomeie a aba para Graficos</h3><p>Dê <strong>dois cliques</strong> no nome <strong>Planilha1</strong>. O nome fica selecionado. Digite <strong>Graficos</strong> (sem acento) e aperte <kbd>Enter</kbd>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 3"><img src="img/a03.jpg" alt="Print do passo 3: Renomeie a aba para Graficos" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Evite acento e espaço em nome de aba. Quando você usar o nome dentro de uma fórmula, fica mais fácil.</div>
+<label class="done"><input type="checkbox" id="ok3" data-step="3"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo4"><div class="num">4<small>PASSO</small></div><div class="body">
+<h3>Digite os títulos e o primeiro mês</h3><p>Clique em <strong>A1</strong> e digite os títulos: <strong>Mês</strong> (A1), <strong>Faturamento</strong> (B1) e <strong>Vendas</strong> (C1).</p><p>Em <strong>A2</strong> digite <strong>jan/2025</strong> e aperte <kbd>Enter</kbd>. O Excel entende como data e mostra <strong>jan/25</strong>. Veja na barra de fórmulas (retângulo de cima): por dentro ele guardou <strong>01/01/2025</strong>.</p><p>Clique de novo em A2. Repare no quadradinho verde no canto de baixo da célula (círculo). É a <strong>alça de preenchimento</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 4"><img src="img/a04.jpg" alt="Print do passo 4: Digite os títulos e o primeiro mês" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok4" data-step="4"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo5"><div class="num">5<small>PASSO</small></div><div class="body">
+<h3>Arraste para criar os 12 meses</h3><p>Segure a alça de preenchimento e <strong>arraste para baixo até a linha 13</strong>. Solte. O Excel completa sozinho: fev/25, mar/25… até dez/25.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 5"><img src="img/a05.jpg" alt="Print do passo 5: Arraste para criar os 12 meses" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Se aparecer 01/01/2025 repetido em vez dos meses, você digitou como texto. Apague e digite de novo no formato jan/2025.</div>
+<label class="done"><input type="checkbox" id="ok5" data-step="5"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo6"><div class="num">6<small>PASSO</small></div><div class="body">
+<h3>Calcule o faturamento do mês (SOMASES)</h3><p>Clique em <strong>B2</strong> e digite a fórmula abaixo. Ela soma o <strong>Valor_Venda</strong> só das vendas <strong>Confirmadas</strong> que aconteceram entre o primeiro e o último dia do mês da célula A2:</p><pre class="formula">=SOMASES(tVendas[Valor_Venda];tVendas[Status];&quot;Confirmada&quot;;tVendas[Data_Venda];&quot;&gt;=&quot;&amp;A2;tVendas[Data_Venda];&quot;&lt;=&quot;&amp;FIMMÊS(A2;0))</pre><p>Traduzindo os pedaços:</p><ul class="mini"><li><code>">="&amp;A2</code>: data maior ou igual a 01/01/2025. O <code>&amp;</code> junta o sinal com a data.</li><li><code>FIMMÊS(A2;0)</code>: devolve o último dia do mês de A2 (31/01/2025).</li><li><code>"Confirmada"</code>: ignora as vendas canceladas.</li></ul><p>Aperte <kbd>Enter</kbd>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 6"><img src="img/a06.jpg" alt="Print do passo 6: Calcule o faturamento do mês (SOMASES)" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok6" data-step="6"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo7"><div class="num">7<small>PASSO</small></div><div class="body">
+<h3>Conte as vendas do mês (CONT.SES)</h3><p>Agora em <strong>C2</strong>. É a mesma ideia, só que em vez de somar valor, você conta quantas vendas aconteceram:</p><pre class="formula">=CONT.SES(tVendas[Status];&quot;Confirmada&quot;;tVendas[Data_Venda];&quot;&gt;=&quot;&amp;A2;tVendas[Data_Venda];&quot;&lt;=&quot;&amp;FIMMÊS(A2;0))</pre><p>Aperte <kbd>Enter</kbd>. Em janeiro foram <strong>52</strong> vendas.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 7"><img src="img/a07.jpg" alt="Print do passo 7: Conte as vendas do mês (CONT.SES)" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok7" data-step="7"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo8"><div class="num">8<small>PASSO</small></div><div class="body">
+<h3>Selecione B2:C2 e dê dois cliques na alça</h3><p>Selecione <strong>B2 e C2</strong> juntas (clique em B2 e arraste até C2).</p><p>Agora dê <strong>dois cliques</strong> na alça de preenchimento (círculo). O Excel copia as duas fórmulas para baixo até onde a coluna A tem dados.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 8"><img src="img/a08.jpg" alt="Print do passo 8: Selecione B2:C2 e dê dois cliques na alça" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Dois cliques na alça é mais rápido que arrastar. Funciona sempre que a coluna ao lado já está preenchida.</div>
+<label class="done"><input type="checkbox" id="ok8" data-step="8"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo9"><div class="num">9<small>PASSO</small></div><div class="body">
+<h3>Confira os 12 meses</h3><p>Pronto: as colunas B e C ficaram preenchidas de jan até dez (retângulo). A fórmula de cada linha olha para o mês da própria linha (A3, A4, A5…), porque <strong>A2</strong> não tinha cifrão.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 9"><img src="img/a09.jpg" alt="Print do passo 9: Confira os 12 meses" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok9" data-step="9"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo10"><div class="num">10<small>PASSO</small></div><div class="body">
+<h3>Formate o faturamento como Moeda</h3><p>Selecione <strong>B2:B13</strong>. Na guia <strong>Página Inicial</strong>, abra a lista de formatos no grupo <strong>Número</strong> (onde está escrito <em>Geral</em>) e clique em <strong>Moeda</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 10"><img src="img/a10.jpg" alt="Print do passo 10: Formate o faturamento como Moeda" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok10" data-step="10"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo11"><div class="num">11<small>PASSO</small></div><div class="body">
+<h3>Ajuste a largura das colunas</h3><p>Selecione as colunas <strong>A até C</strong> clicando nas letras lá em cima. Dê dois cliques na divisa entre as letras <strong>C</strong> e <strong>D</strong>. As colunas ficam do tamanho certo.</p><p>A tabela de resumo está pronta (retângulo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 11"><img src="img/a11.jpg" alt="Print do passo 11: Ajuste a largura das colunas" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Se aparecer ##### numa célula, não é erro: só falta largura. Dois cliques na divisa resolvem.</div>
+<label class="done"><input type="checkbox" id="ok11" data-step="11"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte2"><div class="part-head"><div class="eyebrow">Parte 2 de 7</div><h2>Criar o gráfico de colunas</h2><p>Primeiro você cria um gráfico comum. Ele vai mostrar um problema, e é esse problema que o gráfico de combinação resolve.</p></div>
+<article class="step" id="passo12"><div class="num">12<small>PASSO</small></div><div class="body">
+<h3>Selecione o resumo e abra Inserir</h3><p>Selecione de <strong>A1 até C13</strong> (com os títulos). Clique na guia <strong>Inserir</strong>. No grupo <strong>Gráficos</strong>, clique no ícone de <strong>colunas</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 12"><img src="img/a12.jpg" alt="Print do passo 12: Selecione o resumo e abra Inserir" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok12" data-step="12"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo13"><div class="num">13<small>PASSO</small></div><div class="body">
+<h3>Escolha Coluna Agrupada</h3><p>No menu que abriu, clique no primeiro desenho de <strong>Coluna 2D</strong>: <strong>Coluna Agrupada</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 13"><img src="img/a13.jpg" alt="Print do passo 13: Escolha Coluna Agrupada" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok13" data-step="13"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo14"><div class="num">14<small>PASSO</small></div><div class="body">
+<h3>Veja o problema</h3><p>O gráfico apareceu, mas olhe a série <strong>Vendas</strong> (retângulos): ela está toda achatada lá embaixo, perto do zero.</p><p>Por quê? O eixo da esquerda vai até <strong>R$ 1.200.000</strong>. Um número como 52 é minúsculo nessa régua. As duas séries estão dividindo a mesma régua, e isso não funciona quando os tamanhos são tão diferentes.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 14"><img src="img/a14.jpg" alt="Print do passo 14: Veja o problema" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok14" data-step="14"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo15"><div class="num">15<small>PASSO</small></div><div class="body">
+<h3>Aumente o gráfico e clique em Alterar Tipo</h3><p>Arraste o gráfico para o lado da tabela e puxe o canto para deixá-lo maior.</p><p>Com o gráfico selecionado, apareceu a guia <strong>Design do Gráfico</strong>. Clique em <strong>Alterar Tipo de Gráfico</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 15"><img src="img/a15.jpg" alt="Print do passo 15: Aumente o gráfico e clique em Alterar Tipo" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok15" data-step="15"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte3"><div class="part-head"><div class="eyebrow">Parte 3 de 7</div><h2>Transformar em gráfico de combinação</h2><p>Aqui está o coração da aula. Você vai dizer ao Excel: o faturamento fica em colunas, as vendas viram uma linha, e a linha ganha uma régua própria do lado direito.</p></div>
+<article class="step" id="passo16"><div class="num">16<small>PASSO</small></div><div class="body">
+<h3>Todos os Gráficos → Combinação</h3><p>Na janela <strong>Alterar Tipo de Gráfico</strong>, confira se está na aba <strong>Todos os Gráficos</strong> (retângulo). Na lista da esquerda, clique em <strong>Combinação</strong> (círculo), lá no final.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 16"><img src="img/a16.jpg" alt="Print do passo 16: Todos os Gráficos → Combinação" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok16" data-step="16"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo17"><div class="num">17<small>PASSO</small></div><div class="body">
+<h3>Confira as séries</h3><p>Embaixo aparece a tabela <strong>“Escolha o tipo de gráfico e o eixo para a série de dados”</strong> (retângulo):</p><ul class="mini"><li><strong>Faturamento</strong>: Coluna Agrupada.</li><li><strong>Vendas</strong>: Linha.</li></ul><p>Agora marque a caixinha <strong>Eixo Secundário</strong> da linha <strong>Vendas</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 17"><img src="img/a17.jpg" alt="Print do passo 17: Confira as séries" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok17" data-step="17"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo18"><div class="num">18<small>PASSO</small></div><div class="body">
+<h3>Veja a prévia e clique em OK</h3><p>Olhe a prévia (retângulo): agora a linha vermelha sobe e desce de verdade, porque ganhou uma régua própria. Clique em <strong>OK</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 18"><img src="img/a18.jpg" alt="Print do passo 18: Veja a prévia e clique em OK" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok18" data-step="18"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo19"><div class="num">19<small>PASSO</small></div><div class="body">
+<h3>Dois eixos, duas réguas</h3><p>Repare nos dois eixos (retângulos):</p><ul class="mini"><li><strong>Esquerda</strong>: dinheiro, de R$ 0 a R$ 1.200.000. É a régua das colunas.</li><li><strong>Direita</strong>: quantidade, de 0 a 90. É a régua da linha.</li></ul><p>Agora dá para ver, por exemplo, que <strong>julho</strong> foi o melhor mês nas duas medidas e que <strong>março</strong> foi o pior.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 19"><img src="img/a19.jpg" alt="Print do passo 19: Dois eixos, duas réguas" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Gráfico com dois eixos precisa de títulos nos eixos. Sem eles, a pessoa não sabe qual régua é de qual série. É o que você vai fazer na próxima parte.</div>
+<label class="done"><input type="checkbox" id="ok19" data-step="19"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte4"><div class="part-head"><div class="eyebrow">Parte 4 de 7</div><h2>Deixar o gráfico fácil de ler</h2><p>Um gráfico bom se explica sozinho. Você vai trocar o título, nomear os eixos e mostrar os números da linha de vendas.</p></div>
+<article class="step" id="passo20"><div class="num">20<small>PASSO</small></div><div class="body">
+<h3>Troque o título do gráfico</h3><p>Clique uma vez no texto <strong>Título do Gráfico</strong>, depois clique de novo dentro dele para editar. Apague tudo (<kbd>Ctrl</kbd>+<kbd>A</kbd>) e digite <strong>Faturamento e Vendas por Mês - 2025</strong>. Clique fora para confirmar.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 20"><img src="img/a20.jpg" alt="Print do passo 20: Troque o título do gráfico" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok20" data-step="20"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo21"><div class="num">21<small>PASSO</small></div><div class="body">
+<h3>Elementos do Gráfico → Títulos dos Eixos</h3><p>Clique no gráfico. Aparecem três botões do lado direito. Clique no <strong>+</strong> (Elementos do Gráfico, primeiro círculo) e marque <strong>Títulos dos Eixos</strong> (segundo círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 21"><img src="img/a21.jpg" alt="Print do passo 21: Elementos do Gráfico → Títulos dos Eixos" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok21" data-step="21"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo22"><div class="num">22<small>PASSO</small></div><div class="body">
+<h3>Os títulos aparecem vazios</h3><p>Surgiram três caixas escritas <strong>Título do Eixo</strong> (retângulos): uma na esquerda, uma na direita e uma embaixo. Agora você vai trocar o texto de cada uma.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 22"><img src="img/a22.jpg" alt="Print do passo 22: Os títulos aparecem vazios" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok22" data-step="22"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo23"><div class="num">23<small>PASSO</small></div><div class="body">
+<h3>Escreva cada título</h3><p>Faça em cada caixa: clique uma vez para selecionar, clique de novo para editar, <kbd>Ctrl</kbd>+<kbd>A</kbd> e digite:</p><ul class="mini"><li>Esquerda: <strong>Faturamento (R$)</strong></li><li>Direita: <strong>Quantidade de vendas</strong></li><li>Embaixo: <strong>Mês</strong></li></ul><p>Veja o resultado nos retângulos.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 23"><img src="img/a23.jpg" alt="Print do passo 23: Escreva cada título" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Se o texto que você digitou foi para a barra de fórmulas, sem problema: aperte Enter que ele vai para a caixa selecionada do mesmo jeito.</div>
+<label class="done"><input type="checkbox" id="ok23" data-step="23"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo24"><div class="num">24<small>PASSO</small></div><div class="body">
+<h3>Mostre os números da linha de vendas</h3><p>Clique <strong>uma vez</strong> em cima da linha vermelha. Aparecem bolinhas em todos os pontos: a série <strong>Vendas</strong> está selecionada (na barra de fórmulas aparece <code>=SÉRIE(...)</code>, retângulo).</p><p>Clique no <strong>+</strong> e marque <strong>Rótulos de Dados</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 24"><img src="img/a24.jpg" alt="Print do passo 24: Mostre os números da linha de vendas" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Como só a série Vendas estava selecionada, os rótulos aparecem só nela. Se você marcar com o gráfico inteiro selecionado, as colunas também ganham rótulos e fica poluído.</div>
+<label class="done"><input type="checkbox" id="ok24" data-step="24"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo25"><div class="num">25<small>PASSO</small></div><div class="body">
+<h3>Gráfico de combinação pronto</h3><p>Clique numa célula vazia para tirar a seleção. Este é o seu gráfico de combinação: colunas para dinheiro, linha para quantidade, cada uma com a sua régua, e os números de vendas em cima da linha.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 25"><img src="img/a25.jpg" alt="Print do passo 25: Gráfico de combinação pronto" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok25" data-step="25"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte5"><div class="part-head"><div class="eyebrow">Parte 5 de 7</div><h2>Montar os dados dos minigráficos</h2><p>Minigráfico funciona melhor com uma tabela de linhas e colunas: cada linha é uma coisa (um canal de venda) e cada coluna é um mês. Vamos montar essa tabela embaixo do gráfico.</p></div>
+<article class="step" id="passo26"><div class="num">26<small>PASSO</small></div><div class="body">
+<h3>Monte a grade Canal × Mês</h3><p>Role a planilha para baixo. Em <strong>A22</strong> digite <strong>Canal</strong> e, de <strong>A23 a A26</strong>, os quatro canais: <strong>Agente Corporativo</strong>, <strong>Loja</strong>, <strong>Site</strong> e <strong>WhatsApp</strong>.</p><p>Em <strong>B22</strong> digite <strong>jan/2025</strong> e arraste a alça para a <strong>direita</strong> até <strong>M22</strong>. Você terá os 12 meses na horizontal (retângulo de cima).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 26"><img src="img/a26.jpg" alt="Print do passo 26: Monte a grade Canal × Mês" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Os nomes dos canais precisam ser escritos igualzinho à tabela tVendas, senão a fórmula não encontra nada.</div>
+<label class="done"><input type="checkbox" id="ok26" data-step="26"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo27"><div class="num">27<small>PASSO</small></div><div class="body">
+<h3>Escreva a fórmula em B23</h3><p>Clique em <strong>B23</strong> e digite:</p><pre class="formula">=SOMASES(tVendas[Valor_Venda];tVendas[Canal];$A23;tVendas[Status];&quot;Confirmada&quot;;tVendas[Data_Venda];&quot;&gt;=&quot;&amp;B$22;tVendas[Data_Venda];&quot;&lt;=&quot;&amp;FIMMÊS(B$22;0))</pre><p>Olhe os cifrões, eles são a parte mais importante:</p><ul class="mini"><li><code>$A23</code>: a coluna A fica travada. O canal está sempre na coluna A.</li><li><code>B$22</code>: a linha 22 fica travada. O mês está sempre na linha 22.</li></ul><p>Aperte <kbd>Enter</kbd>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 27"><img src="img/a27.jpg" alt="Print do passo 27: Escreva a fórmula em B23" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok27" data-step="27"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo28"><div class="num">28<small>PASSO</small></div><div class="body">
+<h3>Cuidado: arrastar estraga a fórmula!</h3><p>Eu arrastei B23 para a direita e para baixo e apareceu um monte de <strong>zeros</strong> (retângulo de baixo). Cliquei em C23 para investigar e olhe a barra de fórmulas (retângulo de cima): a fórmula virou <code>tVendas[Canal]</code>, <code>tVendas[Status]</code>, <code>tVendas[Avaliacao]</code>…</p><p>Quando você <strong>arrasta para o lado</strong> uma fórmula com nomes de coluna de tabela, o Excel “anda” as colunas junto, como se fossem C, D, E. Valor_Venda virou Canal, Canal virou Status, e assim por diante.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 28"><img src="img/a28.jpg" alt="Print do passo 28: Cuidado: arrastar estraga a fórmula!" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Essa é uma pegadinha clássica de referência estruturada. Para baixo pode arrastar. Para o lado, use copiar e colar, que é o próximo passo.</div>
+<label class="done"><input type="checkbox" id="ok28" data-step="28"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo29"><div class="num">29<small>PASSO</small></div><div class="body">
+<h3>Copie B23 e cole em B23:M26</h3><p>Clique em <strong>B23</strong> e aperte <kbd>Ctrl</kbd>+<kbd>C</kbd>. Selecione de <strong>B23 até M26</strong> (retângulo) e aperte <kbd>Ctrl</kbd>+<kbd>V</kbd>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 29"><img src="img/a29.jpg" alt="Print do passo 29: Copie B23 e cole em B23:M26" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok29" data-step="29"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo30"><div class="num">30<small>PASSO</small></div><div class="body">
+<h3>Agora os números estão certos</h3><p>Todos os valores apareceram. Clique em qualquer célula (eu cliquei em <strong>I23</strong>) e confira na barra de fórmulas: continua <code>tVendas[Valor_Venda]</code> e <code>tVendas[Canal]</code>, e só o mês mudou para <code>I$22</code>. Copiar e colar não mexe nas colunas da tabela.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 30"><img src="img/a30.jpg" alt="Print do passo 30: Agora os números estão certos" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Ajuste a largura da coluna A com dois cliques na divisa entre A e B, para o nome “Agente Corporativo” caber.</div>
+<label class="done"><input type="checkbox" id="ok30" data-step="30"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte6"><div class="part-head"><div class="eyebrow">Parte 6 de 7</div><h2>Criar minigráficos de linha</h2><p>Agora vem a parte visual: um pequeno gráfico em cada linha, mostrando como o canal foi ao longo do ano.</p></div>
+<article class="step" id="passo31"><div class="num">31<small>PASSO</small></div><div class="body">
+<h3>Selecione os números e clique em Linha</h3><p>Em <strong>N22</strong> digite <strong>Linha</strong> e em <strong>O22</strong> digite <strong>Colunas</strong> (retângulo da direita). São os títulos de onde os minigráficos vão ficar.</p><p>Selecione só os números, <strong>B23:M26</strong> (sem os nomes e sem os meses). Vá na guia <strong>Inserir</strong> e, no grupo <strong>Minigráficos</strong>, clique em <strong>Linha</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 31"><img src="img/a31.jpg" alt="Print do passo 31: Selecione os números e clique em Linha" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok31" data-step="31"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo32"><div class="num">32<small>PASSO</small></div><div class="body">
+<h3>Intervalo de dados já vem preenchido</h3><p>Abriu a janela <strong>Criar Minigráficos</strong>. O <strong>Intervalo de dados</strong> já está com <strong>B23:M26</strong> (retângulo), porque você selecionou antes.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 32"><img src="img/a32.jpg" alt="Print do passo 32: Intervalo de dados já vem preenchido" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok32" data-step="32"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo33"><div class="num">33<small>PASSO</small></div><div class="body">
+<h3>Diga onde os minigráficos vão ficar</h3><p>Clique em <strong>Intervalo de Locais</strong> e digite <strong>N23:N26</strong> (retângulo). São 4 linhas de dados, então são 4 células, uma para cada canal. Clique em <strong>OK</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 33"><img src="img/a33.jpg" alt="Print do passo 33: Diga onde os minigráficos vão ficar" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok33" data-step="33"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo34"><div class="num">34<small>PASSO</small></div><div class="body">
+<h3>Os minigráficos apareceram</h3><p>Na coluna N apareceu um gráfico pequeno em cada célula (retângulo). E surgiu uma guia nova lá em cima: <strong>Minigráfico</strong> (retângulo). Ela só aparece quando você clica numa célula com minigráfico.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 34"><img src="img/a34.jpg" alt="Print do passo 34: Os minigráficos apareceram" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok34" data-step="34"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo35"><div class="num">35<small>PASSO</small></div><div class="body">
+<h3>Aumente a célula para ver melhor</h3><p>Os minigráficos ficam do tamanho da célula. Para enxergar melhor, eu fiz duas coisas:</p><ul class="mini"><li>Colunas N e O: botão direito na letra → <strong>Largura da Coluna</strong> → <strong>18</strong>.</li><li>Linhas 23 a 26: botão direito no número → <strong>Altura da Linha</strong> → <strong>30</strong>.</li></ul><p>Agora dá para ver o sobe e desce de cada canal (retângulo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 35"><img src="img/a35.jpg" alt="Print do passo 35: Aumente a célula para ver melhor" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok35" data-step="35"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo36"><div class="num">36<small>PASSO</small></div><div class="body">
+<h3>Marque Ponto Alto e Ponto Baixo</h3><p>Clique numa célula da coluna N. Na guia <strong>Minigráfico</strong>, no grupo <strong>Mostrar</strong>, marque <strong>Ponto Alto</strong> e <strong>Ponto Baixo</strong> (retângulo). Cada minigráfico ganha um pontinho no melhor e no pior mês.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 36"><img src="img/a36.jpg" alt="Print do passo 36: Marque Ponto Alto e Ponto Baixo" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok36" data-step="36"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo37"><div class="num">37<small>PASSO</small></div><div class="body">
+<h3>Pinte o ponto alto de verde</h3><p>Clique em <strong>Cor do Marcador</strong> (círculo de cima) → <strong>Ponto Alto</strong> (retângulo) e escolha o <strong>verde</strong> das Cores Padrão (círculo de baixo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 37"><img src="img/a37.jpg" alt="Print do passo 37: Pinte o ponto alto de verde" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok37" data-step="37"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo38"><div class="num">38<small>PASSO</small></div><div class="body">
+<h3>Pinte o ponto baixo de vermelho</h3><p>De novo: <strong>Cor do Marcador</strong> → <strong>Ponto Baixo</strong> (retângulo) e escolha o <strong>vermelho</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 38"><img src="img/a38.jpg" alt="Print do passo 38: Pinte o ponto baixo de vermelho" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Verde para o melhor e vermelho para o pior é uma convenção que todo mundo entende sem legenda.</div>
+<label class="done"><input type="checkbox" id="ok38" data-step="38"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte7"><div class="part-head"><div class="eyebrow">Parte 7 de 7</div><h2>Minigráficos de coluna e o eixo igual</h2><p>O minigráfico de coluna é bom para comparar valores de cada mês. Mas tem um detalhe que engana muita gente: cada minigráfico usa a sua própria régua.</p></div>
+<article class="step" id="passo39"><div class="num">39<small>PASSO</small></div><div class="body">
+<h3>Crie os minigráficos de Coluna</h3><p>Selecione de novo <strong>B23:M26</strong>. Na guia <strong>Inserir</strong>, clique em <strong>Coluna</strong> (grupo Minigráficos). No <strong>Intervalo de Locais</strong> digite <strong>O23:O26</strong> (retângulo) e clique em <strong>OK</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 39"><img src="img/a39.jpg" alt="Print do passo 39: Crie os minigráficos de Coluna" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok39" data-step="39"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo40"><div class="num">40<small>PASSO</small></div><div class="body">
+<h3>Atenção: as colunas enganam</h3><p>Olhe os minigráficos de coluna (retângulo). O Agente Corporativo parece vender tanto quanto o Site, com barras bem altas.</p><p>Mas o Agente Corporativo vende cerca de <strong>R$ 50 mil</strong> por mês e o Site mais de <strong>R$ 300 mil</strong>! Cada minigráfico ajustou a régua para o próprio valor máximo. Para comparar canais, todos precisam usar a mesma régua. Clique em <strong>Eixo</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 40"><img src="img/a40.jpg" alt="Print do passo 40: Atenção: as colunas enganam" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok40" data-step="40"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo41"><div class="num">41<small>PASSO</small></div><div class="body">
+<h3>Máximo igual para todos</h3><p>No menu do Eixo, em <strong>Opções de Valor Máximo de Eixo Vertical</strong>, clique em <strong>Igual para Todos os Minigráficos</strong> (círculo).</p><p>Depois abra o <strong>Eixo</strong> de novo e, em <strong>Opções de Valor Mínimo</strong> (retângulo), clique em <strong>Valor Personalizado…</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 41"><img src="img/a41.jpg" alt="Print do passo 41: Máximo igual para todos" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok41" data-step="41"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo42"><div class="num">42<small>PASSO</small></div><div class="body">
+<h3>Mínimo: zero</h3><p>Na janela que abriu, deixe o valor mínimo em <strong>0,0</strong> (retângulo) e clique em <strong>OK</strong> (círculo). Assim todas as barras começam do zero.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 42"><img src="img/a41b.jpg" alt="Print do passo 42: Mínimo: zero" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Gráfico de colunas sempre deve começar do zero. Se a régua começar em outro número, a diferença entre as barras parece maior do que é.</div>
+<label class="done"><input type="checkbox" id="ok42" data-step="42"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo43"><div class="num">43<small>PASSO</small></div><div class="body">
+<h3>Agora a comparação é justa</h3><p>Compare com o passo anterior (retângulo): agora o <strong>Agente Corporativo</strong> tem barras baixinhas e o <strong>Site</strong> tem as barras mais altas. É a verdade dos números.</p><p>Salve com <kbd>Ctrl</kbd>+<kbd>B</kbd>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 43"><img src="img/a42.jpg" alt="Print do passo 43: Agora a comparação é justa" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Nos minigráficos de linha você pode deixar a régua automática. Ali a ideia é ver a tendência de cada canal, não comparar um canal com outro.</div>
+<label class="done"><input type="checkbox" id="ok43" data-step="43"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="why" id="regras">
+<div class="eyebrow">Resumo da aula</div>
+<h2>O que lembrar</h2>
+<div class="rules">
+<div><h3 class="yes">Faça</h3><ul>
+<li>Use <strong>gráfico de combinação</strong> com <strong>eixo secundário</strong> quando as séries têm tamanhos muito diferentes.</li>
+<li>Coloque <strong>título nos dois eixos</strong> sempre que usar eixo secundário.</li>
+<li>Monte o resumo com <strong>SOMASES/CONT.SES</strong> apontando para a tabela. Se a base mudar, o gráfico acompanha.</li>
+<li>Em minigráficos de coluna, use <strong>Igual para Todos</strong> e mínimo <strong>0</strong> quando quiser comparar linhas.</li>
+<li>Marque <strong>ponto alto</strong> e <strong>ponto baixo</strong> com cores fáceis (verde e vermelho).</li>
+</ul></div>
+<div><h3 class="no">Evite</h3><ul>
+<li>Arrastar <strong>para o lado</strong> fórmulas com <code>tVendas[Coluna]</code>: as colunas da tabela “andam”. Use copiar e colar.</li>
+<li>Duas séries de tamanhos diferentes no <strong>mesmo eixo</strong>: uma delas some.</li>
+<li>Rótulos de dados em todas as séries ao mesmo tempo: o gráfico fica poluído.</li>
+<li>Régua de colunas que não começa no zero.</li>
+</ul></div>
+</div>
+</section>
+<section class="end">
+<div class="eyebrow" style="color:var(--accent-soft)">Desafio final</div>
+<h2>Agora é com você</h2>
+<ul>
+<li>Faça um gráfico de combinação com o <strong>faturamento</strong> em colunas e o <strong>ticket médio</strong> (Faturamento ÷ Vendas) em linha, no eixo secundário.</li>
+<li>Monte a grade Canal × Mês para <strong>quantidade de vendas</strong> (CONT.SES) e crie minigráficos de linha com o <strong>Primeiro Ponto</strong> e o <strong>Último Ponto</strong> marcados.</li>
+<li>Troque um minigráfico para o tipo <strong>Perdas/Ganhos</strong> e explique para a turma por que ele não faz sentido com faturamento (dica: ele só mostra se o número é positivo ou negativo).</li>
+<li>Mude o status de algumas vendas de julho na tabela tVendas e veja o gráfico e os minigráficos se atualizarem sozinhos. Depois aperte <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</li>
+</ul>
+</section>
+</main></div>
+<div class="lightbox" id="lb" hidden><img alt="" id="lbimg"></div>
 <script>
-var target=new Date(2026,10,1,8,0,0);
-function tick(){var now=new Date(),diff=target-now;if(diff<=0){document.querySelector('.countdown').innerHTML='<p style="color:var(--accent);font-size:1.2rem;font-weight:700">A aula começa agora! 🎉</p>';return;}var d=Math.floor(diff/864e5),h=Math.floor((diff%864e5)/36e5),m=Math.floor((diff%36e5)/6e4),s=Math.floor((diff%6e4)/1e3);document.getElementById('d').textContent=String(d).padStart(2,'0');document.getElementById('h').textContent=String(h).padStart(2,'0');document.getElementById('m').textContent=String(m).padStart(2,'0');document.getElementById('s').textContent=String(s).padStart(2,'0');}
-tick();setInterval(tick,1000);
+(function(){
+  var total=43;
+  var boxes=[].slice.call(document.querySelectorAll('.done input'));
+  var saved={};
+  try{saved=JSON.parse(localStorage.getItem('aula09-graficos-passos')||'{}')||{};}catch(e){}
+  function upd(){var c=boxes.filter(function(b){return b.checked}).length;
+    document.getElementById('cnt').textContent=c;document.getElementById('barfill').style.width=(c/total*100)+'%';}
+  boxes.forEach(function(b){ if(saved[b.dataset.step]) b.checked=true;
+    b.addEventListener('change',function(){saved[b.dataset.step]=b.checked;
+      try{localStorage.setItem('aula09-graficos-passos',JSON.stringify(saved))}catch(e){} upd();});});
+  upd();
+  var lb=document.getElementById('lb'),li=document.getElementById('lbimg');
+  document.querySelectorAll('button.zoom').forEach(function(btn){btn.addEventListener('click',function(){
+    var im=btn.querySelector('img');li.src=im.src;li.alt=im.alt;lb.hidden=false;});});
+  lb.addEventListener('click',function(){lb.hidden=true});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.hidden=true});
+})();
 </script>
+
 </body></html>

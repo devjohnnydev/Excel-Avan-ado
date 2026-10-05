@@ -1,0 +1,366 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Aula 10: Funções Dinâmicas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Lexend:wght@300;400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: um caderno de bordo — trilho de navegação por partes à esquerda, passos em fluxo vertical com print grande */
+:root{
+  --bg:#f3f6f5; --paper:#ffffff; --ink:#14302e; --muted:#566b68;
+  --accent:#0d6b5f; --accent-soft:#d8ece8; --mark:#d92b3a; --tip:#fff4d6; --tip-ink:#6a4a00; --line:#d5dfdc;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Lexend", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1716; --paper:#172221; --ink:#e3eeeb; --muted:#9db2ae;
+  --accent:#4cc2ae; --accent-soft:#1d3a35; --mark:#ff5d6a; --tip:#33290f; --tip-ink:#f4d58a; --line:#2a3a38; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1716; --paper:#172221; --ink:#e3eeeb; --muted:#9db2ae;
+  --accent:#4cc2ae; --accent-soft:#1d3a35; --mark:#ff5d6a; --tip:#33290f; --tip-ink:#f4d58a; --line:#2a3a38; color-scheme:dark}
+*{box-sizing:border-box} img{max-width:100%} .lightbox[hidden]{display:none}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.65;font-weight:300}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 80px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)} nav.rail{display:none}}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+strong{font-weight:600}
+header.hero{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center;padding-block:12px 8px}
+@media (max-width:900px){header.hero{grid-template-columns:minmax(0,1fr)}}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+header.hero h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;letter-spacing:-.02em;margin-block:8px 14px}
+header.hero p{max-width:60ch;margin:0 0 10px}
+.ticket{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:10px}
+.ticket img{border-radius:8px;border:1px solid var(--line);display:block}
+.ticket .cap{font-size:.85rem;color:var(--muted)}
+nav.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;font-size:.9rem;display:grid;gap:4px}
+nav.rail .label{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+nav.rail a{color:var(--ink);text-decoration:none;padding:6px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline}
+nav.rail a:hover,nav.rail a:focus-visible{background:var(--accent-soft);outline:none}
+nav.rail a span{font-family:var(--mono);color:var(--accent);font-size:.8rem}
+.progress{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.bar{height:8px;background:var(--accent-soft);border-radius:99px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+main{min-width:0;display:grid;gap:56px}
+section.why{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;display:grid;gap:14px}
+section.why h2{font-size:1.9rem}
+.reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.reasons div{border-top:3px solid var(--accent);padding-top:10px}
+.reasons h3{font-size:1.1rem;margin-bottom:4px}
+.reasons p{margin:0;font-size:.95rem}
+.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:.92rem;color:var(--muted)}
+.legend b{color:var(--mark);font-weight:600}
+.part{display:grid;gap:26px;scroll-margin-top:16px}
+.part-head{display:grid;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+.part-head .eyebrow{font-size:.8rem}
+.part-head h2{font-size:clamp(1.7rem,3.6vw,2.4rem);font-weight:800}
+.part-head p{margin:0;max-width:68ch}
+.step{display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;scroll-margin-top:16px}
+@media (max-width:600px){.step{grid-template-columns:minmax(0,1fr)}}
+.num{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--accent);line-height:1}
+.num small{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;color:var(--muted);font-weight:500;margin-top:4px}
+.body{min-width:0;display:grid;gap:12px}
+.body h3{font-size:1.35rem;font-weight:600}
+.body p{margin:0;max-width:70ch}
+.body ol.mini,.body ul.mini{margin:0;padding-left:1.3em;display:grid;gap:6px;max-width:70ch}
+kbd{font-family:var(--mono);font-size:.82em;background:var(--paper);border:1px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:1px 7px;white-space:nowrap}
+code,pre.formula{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);border-radius:6px;padding:2px 6px;overflow-wrap:anywhere}
+pre.formula{margin:0;padding:12px 14px;font-size:.95rem;overflow-x:auto;white-space:pre}
+figure{margin:0;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px}
+figure button{all:unset;cursor:zoom-in;display:block;border-radius:6px}
+figure button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+.tip{background:var(--tip);color:var(--tip-ink);border-radius:10px;padding:10px 14px;font-size:.93rem;max-width:70ch}
+.tip strong{font-weight:600}
+.done{display:inline-flex;align-items:center;gap:10px;font-size:.92rem;color:var(--muted);cursor:pointer;user-select:none;width:max-content}
+.done input{width:20px;height:20px;accent-color:var(--accent)}
+table.cmp{border-collapse:collapse;width:100%;font-size:.93rem;min-width:560px} table.cmp th,table.cmp td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top} table.cmp th{font-family:var(--display);font-weight:600} .tw{overflow-x:auto} .yes{color:var(--accent);font-weight:600} .no{color:var(--mark);font-weight:600} .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px} .rules ul{margin:0;padding-left:1.2em;display:grid;gap:6px} .rules h3{font-size:1.1rem;margin-bottom:6px}
+section.end{background:var(--ink);color:var(--bg);border-radius:16px;padding:28px;display:grid;gap:12px}
+section.end h2{font-size:1.9rem}
+section.end ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.lightbox{position:fixed;inset:0;background:rgba(5,12,11,.88);display:grid;place-items:center;padding:16px;z-index:10;cursor:zoom-out}
+.lightbox img{max-width:100%;max-height:100%;border-radius:8px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.prof-strip{display:flex;align-items:center;gap:12px;margin-top:18px;padding:10px 14px;background:var(--paper);border:1px solid var(--line);border-radius:12px;width:max-content;max-width:100%}
+.prof-strip img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #f5c518;flex-shrink:0}
+.prof-strip .pinfo{display:grid;gap:1px}
+.prof-strip .pname{font-family:var(--display);font-weight:700;font-size:.97rem;color:var(--ink)}
+.prof-strip .pplat{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;color:#b8920a;text-transform:uppercase}
+a.prof-strip{text-decoration:none;transition:box-shadow .18s,transform .15s}
+a.prof-strip:hover{box-shadow:0 4px 18px rgba(13,107,95,.18);transform:translateY(-1px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .prof-strip{border-color:#3a5040}}
+:root[data-theme="dark"] .prof-strip{border-color:#3a5040}
+.dl-btn{display:inline-flex;align-items:center;gap:9px;margin-top:16px;padding:11px 20px;background:var(--accent);color:#fff;font-family:var(--body);font-size:.93rem;font-weight:600;border-radius:10px;text-decoration:none;transition:background .18s,transform .15s;border:none;cursor:pointer}
+.dl-btn:hover{background:#0a5a4f;transform:translateY(-2px)}
+.dl-btn svg{flex-shrink:0}
+.dl-info{font-size:.78rem;color:var(--muted);margin-top:5px}
+</style>
+<div class="wrap">
+<header class="hero">
+<div>
+<div class="eyebrow">Excel · Aula 10 · Matrizes dinâmicas</div>
+<a class="prof-strip" href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener" title="Acessar a Plataforma Braga Treinamentos"><img src="img/professor.jpg" alt="Professor Johnny Braga"><div class="pinfo"><span class="pname">Prof. Johnny Braga de Oliveira</span><span class="pplat">🎓 Braga Treinamentos · clique para acessar a plataforma</span></div></a>
+<h1>Funções Dinâmicas</h1>
+<p>Olá! Nesta aula você vai conhecer as funções que mudaram o Excel: <strong>ÚNICO</strong>, <strong>CLASSIFICAR</strong>, <strong>CLASSIFICARPOR</strong> e <strong>FILTRO</strong>. Você escreve a fórmula em <strong>uma célula</strong> e o resultado se espalha pelas células vizinhas.</p>
+<p>Eu fiz tudo de verdade no Excel, com a planilha da agência de viagens, e tirei um print de <strong>cada passo</strong>, inclusive dos erros, para você reconhecer quando eles aparecerem. O <b style="color:var(--mark)">círculo vermelho</b> mostra onde clicar e o <b style="color:var(--mark)">retângulo vermelho</b> mostra o que olhar.</p>
+<a class="dl-btn" href="Aula3_Agencia_Viagens.xlsx" download><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Baixar planilha da aula (.xlsx)</a>
+<div class="dl-info">📁 Aula3_Agencia_Viagens.xlsx · 228 KB · Excel 2016 ou superior</div>
+<div class="dl-info" style="margin-top:10px">🌐 Acesse mais aulas em <a href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none">bragatreinamentos.com.br</a></div>
+</div>
+<div class="ticket"><img src="img/hero.jpg" alt="Aba Filtro com listas suspensas e a tabela filtrada pela função FILTRO" loading="eager"><div class="cap">No fim da aula, você escolhe o canal e o status nas listas e a tabela se monta sozinha.</div></div>
+</header>
+<nav class="rail" aria-label="Partes da aula"><div class="label">Roteiro</div>
+<a href="#porque"><span>00</span>Antes de começar</a>
+<a href="#parte1"><span>01</span>ÚNICO</a>
+<a href="#parte2"><span>02</span>CLASSIFICAR</a>
+<a href="#parte3"><span>03</span>CLASSIFICARPOR</a>
+<a href="#parte4"><span>04</span>O erro #DESPEJAR!</a>
+<a href="#parte5"><span>05</span>Lista suspensa dinâmica</a>
+<a href="#parte6"><span>06</span>FILTRO</a>
+<div class="progress"><div style="font-size:.85rem">Passos feitos: <strong id="cnt">0</strong> de 29</div><div class="bar"><i id="barfill"></i></div></div>
+</nav>
+<main>
+<section class="why" id="porque">
+<div class="eyebrow">Antes de clicar</div>
+<h2>O que é uma fórmula que “despeja”?</h2>
+<p>Até agora, cada fórmula que você escreveu devolvia <strong>um</strong> resultado numa célula. As funções desta aula devolvem <strong>vários</strong> resultados de uma vez: você escreve a fórmula em uma célula e o Excel preenche as células de baixo (e do lado) sozinho. Isso se chama <strong>despejar</strong> (em inglês, <em>spill</em>), e o resultado é uma <strong>matriz dinâmica</strong>.</p>
+<div class="reasons">
+<div><h3>ÚNICO</h3><p>Tira as repetições de uma coluna. 1.380 vendas viram 4 canais.</p></div>
+<div><h3>CLASSIFICAR</h3><p>Coloca uma lista em ordem, de A a Z ou do maior para o menor.</p></div>
+<div><h3>CLASSIFICARPOR</h3><p>Ordena uma lista usando outra como critério. É assim que se faz um ranking.</p></div>
+<div><h3>FILTRO</h3><p>Traz só as linhas que atendem às suas condições. Um filtro que é fórmula.</p></div>
+</div>
+<h2 style="font-size:1.5rem;margin-top:8px">Atenção à versão do Excel</h2>
+<div class="tw"><table class="cmp">
+<tr><th>Versão</th><th>Funciona?</th></tr>
+<tr><td>Microsoft 365 (instalado ou Excel Online)</td><td class="yes">Sim</td></tr>
+<tr><td>Excel 2021 e 2024</td><td class="yes">Sim</td></tr>
+<tr><td>Excel 2019, 2016 ou mais antigo</td><td class="no">Não. Aparece #NOME?</td></tr>
+</table></div>
+<p><strong>Nomes em português:</strong> no Excel em português a função de filtrar se chama <strong>FILTRO</strong> (e não FILTRAR). Eu errei de propósito no passo 22 para você ver o que acontece.</p>
+<div class="legend"><span><b>◯ Círculo</b> = clique aqui</span><span><b>▭ Retângulo</b> = olhe com atenção</span></div>
+<p style="font-size:.92rem;color:var(--muted)">Toque em qualquer print para ver em tamanho grande. Marque “Fiz este passo” para acompanhar o seu progresso (fica salvo só no seu navegador).</p>
+</section>
+<section class="part" id="parte1"><div class="part-head"><div class="eyebrow">Parte 1 de 6</div><h2>ÚNICO: a lista sem repetição</h2><p>A coluna Canal da tabela tVendas tem 1.380 linhas, mas só 4 canais diferentes. Com ÚNICO você descobre quais são, com uma fórmula só.</p></div>
+<article class="step" id="passo1"><div class="num">1<small>PASSO</small></div><div class="body">
+<h3>Crie a aba Funcoes</h3><p>Abra a planilha da agência e salve uma cópia com <kbd>F12</kbd> (eu salvei como “Aula 10 - Funcoes Modernas”).</p><p>Clique no <strong>+</strong> lá embaixo para criar uma aba nova, dê dois cliques no nome dela e digite <strong>Funcoes</strong> (retângulo). Aperte <kbd>Enter</kbd>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 1"><img src="img/b01.jpg" alt="Print do passo 1: Crie a aba Funcoes" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok1" data-step="1"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo2"><div class="num">2<small>PASSO</small></div><div class="body">
+<h3>Escreva =ÚNICO(tVendas[Canal])</h3><p>Em <strong>A1</strong> digite o título <strong>Canais</strong>. Em <strong>A2</strong> digite:</p><pre class="formula">=ÚNICO(tVendas[Canal])</pre><p>Repare: você está escrevendo em <strong>uma célula só</strong> (retângulo de baixo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 2"><img src="img/b02.jpg" alt="Print do passo 2: Escreva =ÚNICO(tVendas[Canal])" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Enquanto você digita, o Excel sugere o nome da tabela e da coluna. Aperte Tab para aceitar a sugestão.</div>
+<label class="done"><input type="checkbox" id="ok2" data-step="2"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo3"><div class="num">3<small>PASSO</small></div><div class="body">
+<h3>A fórmula despejou 4 resultados</h3><p>Aperte <kbd>Enter</kbd>. Apareceram <strong>Site, WhatsApp, Agente Corporativo e Loja</strong>, um em cada célula (retângulo). Em volta deles tem uma borda azul fininha: é a área do despejo.</p><p>A ordem é a ordem em que cada canal aparece pela primeira vez na tabela.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 3"><img src="img/b03.jpg" alt="Print do passo 3: A fórmula despejou 4 resultados" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok3" data-step="3"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo4"><div class="num">4<small>PASSO</small></div><div class="body">
+<h3>Só A2 tem fórmula</h3><p>Clique em <strong>A4</strong> (retângulo de baixo) e olhe a barra de fórmulas: a fórmula aparece <strong>cinza, apagadinha</strong> (retângulo de cima).</p><p>Isso quer dizer que A4 não tem fórmula própria. Ela só está mostrando um pedaço do resultado de A2. Se você quiser mudar alguma coisa, é em A2 que mexe.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 4"><img src="img/b04.jpg" alt="Print do passo 4: Só A2 tem fórmula" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Você não consegue apagar só A4. Para sumir com a lista inteira, apague A2.</div>
+<label class="done"><input type="checkbox" id="ok4" data-step="4"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte2"><div class="part-head"><div class="eyebrow">Parte 2 de 6</div><h2>CLASSIFICAR: colocar em ordem</h2><p>Você pode colocar uma função dentro da outra. Aqui o ÚNICO tira as repetições e o CLASSIFICAR coloca em ordem alfabética.</p></div>
+<article class="step" id="passo5"><div class="num">5<small>PASSO</small></div><div class="body">
+<h3>ÚNICO dentro de CLASSIFICAR</h3><p>Em <strong>C1</strong> digite <strong>Pacotes (A-Z)</strong> e em <strong>D1</strong> digite <strong>Faturamento</strong>. Em <strong>C2</strong> escreva:</p><pre class="formula">=CLASSIFICAR(ÚNICO(tVendas[Pacote]))</pre><p>Leia de dentro para fora: primeiro o <strong>ÚNICO</strong> pega os pacotes sem repetir, depois o <strong>CLASSIFICAR</strong> coloca em ordem.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 5"><img src="img/b05.jpg" alt="Print do passo 5: ÚNICO dentro de CLASSIFICAR" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok5" data-step="5"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo6"><div class="num">6<small>PASSO</small></div><div class="body">
+<h3>15 pacotes em ordem alfabética</h3><p>Aperte <kbd>Enter</kbd> e ajuste a largura da coluna C (dois cliques na divisa entre C e D). Os 15 pacotes apareceram de <strong>Bonito Aventura</strong> até <strong>Serra Gaúcha</strong> (retângulo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 6"><img src="img/b06.jpg" alt="Print do passo 6: 15 pacotes em ordem alfabética" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok6" data-step="6"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo7"><div class="num">7<small>PASSO</small></div><div class="body">
+<h3>Some o faturamento usando C2#</h3><p>Agora clique em <strong>D2</strong> e escreva:</p><pre class="formula">=SOMASES(tVendas[Valor_Venda];tVendas[Pacote];C2#;tVendas[Status];&quot;Confirmada&quot;)</pre><p>Olhe o <code>C2#</code> (retângulo do meio). O <strong>#</strong> depois de uma célula quer dizer “todo o despejo que começa nesta célula”. Em vez de escrever C2:C16, você escreve <strong>C2#</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 7"><img src="img/b07.jpg" alt="Print do passo 7: Some o faturamento usando C2#" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> A vantagem do # é que, se amanhã a agência criar um pacote novo, o despejo cresce para 16 linhas e o C2# acompanha sozinho. Com C2:C16 você teria que corrigir a fórmula na mão.</div>
+<label class="done"><input type="checkbox" id="ok7" data-step="7"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo8"><div class="num">8<small>PASSO</small></div><div class="body">
+<h3>A soma também despejou</h3><p>Aperte <kbd>Enter</kbd>. Como o critério era uma lista de 15 pacotes, o SOMASES devolveu <strong>15 resultados</strong> (retângulo), um para cada pacote.</p><p>Selecione D2:D16 e formate como <strong>Moeda</strong> (Página Inicial → Número → Moeda).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 8"><img src="img/b08.jpg" alt="Print do passo 8: A soma também despejou" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok8" data-step="8"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte3"><div class="part-head"><div class="eyebrow">Parte 3 de 6</div><h2>CLASSIFICARPOR: o ranking</h2><p>A lista em ordem alfabética é boa para procurar um pacote. Mas o chefe quer saber qual vende mais. Para isso você ordena os nomes usando o faturamento.</p></div>
+<article class="step" id="passo9"><div class="num">9<small>PASSO</small></div><div class="body">
+<h3>Escreva =CLASSIFICARPOR(C2#;D2#;-1)</h3><p>Em <strong>F1</strong> digite <strong>Ranking de pacotes</strong> e em <strong>G1</strong> <strong>Faturamento</strong>. Em <strong>F2</strong> escreva:</p><pre class="formula">=CLASSIFICARPOR(C2#;D2#;-1)</pre><ul class="mini"><li><code>C2#</code>: o que vai aparecer (os nomes dos pacotes, retângulo azul).</li><li><code>D2#</code>: o que decide a ordem (o faturamento, retângulo vermelho).</li><li><code>-1</code>: do maior para o menor. Se fosse <code>1</code>, seria do menor para o maior.</li></ul>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 9"><img src="img/b09.jpg" alt="Print do passo 9: Escreva =CLASSIFICARPOR(C2#;D2#;-1)" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok9" data-step="9"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo10"><div class="num">10<small>PASSO</small></div><div class="body">
+<h3>O ranking pronto</h3><p>Aperte <kbd>Enter</kbd>. Em <strong>G2</strong> eu escrevi <code>=CLASSIFICAR(D2#;;-1)</code> para ver os valores na mesma ordem (formatei como Moeda).</p><p>Resultado (retângulo): <strong>Cancún All Inclusive</strong> é o campeão com <strong>R$ 1.494.310,00</strong>, e <strong>Lençóis Maranhenses</strong> fica em último.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 10"><img src="img/b10.jpg" alt="Print do passo 10: O ranking pronto" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Em CLASSIFICAR(D2#;;-1) tem dois ponto e vírgula seguidos. O espaço vazio no meio é o “índice de classificação”, que você pode pular quando a lista tem só uma coluna.</div>
+<label class="done"><input type="checkbox" id="ok10" data-step="10"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte4"><div class="part-head"><div class="eyebrow">Parte 4 de 6</div><h2>O erro #DESPEJAR!</h2><p>Fórmula que despeja precisa de espaço livre. Se alguma célula do caminho estiver ocupada, o Excel não escreve por cima: ele mostra um erro. Vamos provocar esse erro de propósito.</p></div>
+<article class="step" id="passo11"><div class="num">11<small>PASSO</small></div><div class="body">
+<h3>Escreva algo no caminho</h3><p>Clique em <strong>F5</strong>, que faz parte do ranking, digite <strong>teste</strong> e aperte <kbd>Enter</kbd>.</p><p>O ranking inteiro sumiu e <strong>F2</strong> mostra <strong>#DESPEJAR!</strong> (retângulo de cima). A borda tracejada mostra a área de que a fórmula precisa. Clique no triângulo amarelo (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 11"><img src="img/b11.jpg" alt="Print do passo 11: Escreva algo no caminho" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok11" data-step="11"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo12"><div class="num">12<small>PASSO</small></div><div class="body">
+<h3>O Excel explica o problema</h3><p>A primeira linha do menu diz o motivo: <strong>“O intervalo de despejo não está em branco”</strong> (retângulo). Clique em <strong>Selecionar Células Que Estão Obstruindo</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 12"><img src="img/b12.jpg" alt="Print do passo 12: O Excel explica o problema" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok12" data-step="12"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo13"><div class="num">13<small>PASSO</small></div><div class="body">
+<h3>Encontre e apague o culpado</h3><p>O Excel selecionou <strong>F5</strong> (retângulo), a célula que está atrapalhando. A caixa de nome mostra F5 e a barra de fórmulas mostra “teste”.</p><p>Aperte <kbd>Delete</kbd>. O ranking volta na hora.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 13"><img src="img/b13.jpg" alt="Print do passo 13: Encontre e apague o culpado" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Numa planilha grande, o culpado pode ser um espaço em branco digitado sem querer. Por isso o botão “Selecionar Células Que Estão Obstruindo” é tão útil: ele acha para você.</div>
+<label class="done"><input type="checkbox" id="ok13" data-step="13"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte5"><div class="part-head"><div class="eyebrow">Parte 5 de 6</div><h2>Uma lista suspensa que se atualiza sozinha</h2><p>Agora vamos montar uma tela de consulta. O usuário escolhe o canal e o status numa lista, e a planilha mostra as vendas. A lista de canais vai vir do ÚNICO que você fez na Parte 1.</p></div>
+<article class="step" id="passo14"><div class="num">14<small>PASSO</small></div><div class="body">
+<h3>Crie a aba Filtro e abra Validação de Dados</h3><p>Crie mais uma aba e chame de <strong>Filtro</strong>. Em <strong>A1</strong> digite <strong>Canal:</strong> e em <strong>A2</strong> <strong>Status:</strong>.</p><p>Clique em <strong>B1</strong>, vá na guia <strong>Dados</strong> e clique em <strong>Validação de Dados</strong> (círculo, grupo Ferramentas de Dados).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 14"><img src="img/b14.jpg" alt="Print do passo 14: Crie a aba Filtro e abra Validação de Dados" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok14" data-step="14"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo15"><div class="num">15<small>PASSO</small></div><div class="body">
+<h3>Abra a lista Permitir</h3><p>Na janela <strong>Validação de dados</strong>, aba <strong>Configurações</strong>, clique na caixa <strong>Permitir</strong> (retângulo), que está em “Qualquer valor”.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 15"><img src="img/b15.jpg" alt="Print do passo 15: Abra a lista Permitir" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok15" data-step="15"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo16"><div class="num">16<small>PASSO</small></div><div class="body">
+<h3>Escolha Lista</h3><p>Clique em <strong>Lista</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 16"><img src="img/b16.jpg" alt="Print do passo 16: Escolha Lista" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok16" data-step="16"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo17"><div class="num">17<small>PASSO</small></div><div class="body">
+<h3>Fonte: =Funcoes!$A$2#</h3><p>No campo <strong>Fonte</strong> (retângulo) digite:</p><pre class="formula">=Funcoes!$A$2#</pre><p>Ou seja: “use como opções tudo o que a fórmula ÚNICO despejou a partir de A2 na aba Funcoes”. Clique em <strong>OK</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 17"><img src="img/b17.jpg" alt="Print do passo 17: Fonte: =Funcoes!$A$2#" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Se um dia aparecer um canal novo na tabela tVendas, o ÚNICO cresce e a lista suspensa ganha a opção nova sozinha.</div>
+<label class="done"><input type="checkbox" id="ok17" data-step="17"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo18"><div class="num">18<small>PASSO</small></div><div class="body">
+<h3>Teste a lista</h3><p>Clique na setinha ao lado de B1 (círculo). Aparecem os 4 canais (retângulo). Escolha <strong>WhatsApp</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 18"><img src="img/b18.jpg" alt="Print do passo 18: Teste a lista" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok18" data-step="18"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo19"><div class="num">19<small>PASSO</small></div><div class="body">
+<h3>Faça a lista de Status</h3><p>Clique em <strong>B2</strong> e repita: <strong>Dados → Validação de Dados → Permitir: Lista</strong>. Desta vez, em <strong>Fonte</strong>, digite as opções separadas por ponto e vírgula (retângulo):</p><pre class="formula">Confirmada;Cancelada</pre><p>Clique em <strong>OK</strong> e escolha <strong>Cancelada</strong> na setinha de B2.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 19"><img src="img/b19.jpg" alt="Print do passo 19: Faça a lista de Status" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok19" data-step="19"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte6"><div class="part-head"><div class="eyebrow">Parte 6 de 6</div><h2>FILTRO: a consulta com duas condições</h2><p>Agora a função mais poderosa da aula. Ela vai trazer da tabela tVendas só as linhas do canal e do status que você escolheu nas listas.</p></div>
+<article class="step" id="passo20"><div class="num">20<small>PASSO</small></div><div class="body">
+<h3>Puxe os cabeçalhos da tabela</h3><p>Em <strong>A4</strong> escreva:</p><pre class="formula">=tVendas[#Cabeçalhos]</pre><p>Os 15 títulos da tabela aparecem em uma linha (retângulo). Também é um despejo, só que para o lado.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 20"><img src="img/b20.jpg" alt="Print do passo 20: Puxe os cabeçalhos da tabela" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok20" data-step="20"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo21"><div class="num">21<small>PASSO</small></div><div class="body">
+<h3>Escreva a fórmula em A5</h3><p>Em <strong>A5</strong> eu escrevi o que muita gente escreve:</p><pre class="formula">=FILTRAR(tVendas;(tVendas[Canal]=B1)*(tVendas[Status]=B2);&quot;Nenhuma venda encontrada&quot;)</pre><p>Repare que o Excel pinta <strong>B1</strong> e <strong>B2</strong> (retângulo) porque a fórmula usa as duas listas que você acabou de criar.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 21"><img src="img/b21.jpg" alt="Print do passo 21: Escreva a fórmula em A5" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok21" data-step="21"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo22"><div class="num">22<small>PASSO</small></div><div class="body">
+<h3>Erro #NOME? O nome está errado</h3><p>Apertei <kbd>Enter</kbd> e apareceu <strong>#NOME?</strong> (retângulo e círculo). Esse erro quer dizer: “não conheço essa função”.</p><p>O problema está no nome (retângulo de cima): no Excel em português a função se chama <strong>FILTRO</strong>, e não FILTRAR.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 22"><img src="img/b22.jpg" alt="Print do passo 22: Erro #NOME? O nome está errado" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Sempre que aparecer #NOME?, confira se o nome da função está escrito certo e no idioma do seu Excel. É o erro mais comum quando se copia fórmula da internet.</div>
+<label class="done"><input type="checkbox" id="ok22" data-step="22"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo23"><div class="num">23<small>PASSO</small></div><div class="body">
+<h3>Corrija para FILTRO</h3><p>Clique em A5, aperte <kbd>F2</kbd> e troque <strong>FILTRAR</strong> por <strong>FILTRO</strong> (retângulo):</p><pre class="formula">=FILTRO(tVendas;(tVendas[Canal]=B1)*(tVendas[Status]=B2);&quot;Nenhuma venda encontrada&quot;)</pre><p>Entenda as três partes:</p><ul class="mini"><li><code>tVendas</code>: de onde vêm as linhas.</li><li><code>(tVendas[Canal]=B1)*(tVendas[Status]=B2)</code>: as condições. O <strong>*</strong> quer dizer <strong>E</strong>: a linha precisa ser do canal escolhido <strong>e</strong> do status escolhido. Para <strong>OU</strong>, você usaria <strong>+</strong>.</li><li><code>"Nenhuma venda encontrada"</code>: o que mostrar se nenhuma linha passar.</li></ul>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 23"><img src="img/b23.jpg" alt="Print do passo 23: Corrija para FILTRO" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok23" data-step="23"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo24"><div class="num">24<small>PASSO</small></div><div class="body">
+<h3>As vendas apareceram</h3><p>Aperte <kbd>Enter</kbd>. Todas as vendas <strong>canceladas</strong> do canal <strong>WhatsApp</strong> foram despejadas, com as 15 colunas (retângulo).</p><p>Só que as colunas de data (retângulo do meio) aparecem como números: 45711, 45734… É assim que o Excel guarda datas por dentro. O FILTRO traz o valor, mas não traz a formatação.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 24"><img src="img/b24.jpg" alt="Print do passo 24: As vendas apareceram" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok24" data-step="24"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo25"><div class="num">25<small>PASSO</small></div><div class="body">
+<h3>Formate as datas</h3><p>Selecione as colunas <strong>B e C</strong> clicando nas letras (retângulo). Em <strong>Página Inicial → Número</strong>, escolha <strong>Data Abreviada</strong> (círculo). Ajuste a largura das colunas.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 25"><img src="img/b25.jpg" alt="Print do passo 25: Formate as datas" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok25" data-step="25"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo26"><div class="num">26<small>PASSO</small></div><div class="body">
+<h3>Troque o canal na lista</h3><p>Agora o teste final. Clique na setinha de <strong>B1</strong> e escolha <strong>Agente Corporativo</strong> (círculo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 26"><img src="img/b26.jpg" alt="Print do passo 26: Troque o canal na lista" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok26" data-step="26"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo27"><div class="num">27<small>PASSO</small></div><div class="body">
+<h3>A tabela muda sozinha</h3><p>Sem mexer na fórmula, o resultado mudou na hora (retângulo de baixo): agora aparecem só as vendas canceladas do <strong>Agente Corporativo</strong>. E a lista ficou menor, porque esse canal teve menos cancelamentos.</p><p>Você acabou de criar uma tela de consulta, sem macro e sem tabela dinâmica.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 27"><img src="img/b27.jpg" alt="Print do passo 27: A tabela muda sozinha" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok27" data-step="27"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo28"><div class="num">28<small>PASSO</small></div><div class="body">
+<h3>Conte o resultado com LINS(A5#)</h3><p>Em <strong>D1</strong> digite <strong>Encontradas:</strong>. Em <strong>E1</strong> escreva (retângulo):</p><pre class="formula">=LINS(A5#)</pre><p><strong>LINS</strong> conta quantas linhas tem um intervalo. Com <code>A5#</code>, ele conta as linhas do despejo do FILTRO (retângulo grande).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 28"><img src="img/b28.jpg" alt="Print do passo 28: Conte o resultado com LINS(A5#)" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok28" data-step="28"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo29"><div class="num">29<small>PASSO</small></div><div class="body">
+<h3>17 vendas encontradas</h3><p>Aperte <kbd>Enter</kbd>: <strong>17</strong> (retângulo). Troque o canal ou o status nas listas e veja o número mudar junto com a tabela.</p><p>Salve com <kbd>Ctrl</kbd>+<kbd>B</kbd>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 29"><img src="img/b29.jpg" alt="Print do passo 29: 17 vendas encontradas" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Quando o FILTRO não encontra nada, ele mostra só a frase “Nenhuma venda encontrada”, e o LINS devolve 1. Se quiser, você pode tratar isso com um SE.</div>
+<label class="done"><input type="checkbox" id="ok29" data-step="29"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="why" id="regras">
+<div class="eyebrow">Resumo da aula</div>
+<h2>Cola das funções</h2>
+<div class="tw"><table class="cmp">
+<tr><th>Função</th><th>Para que serve</th><th>Exemplo da aula</th></tr>
+<tr><td><code>ÚNICO</code></td><td>Lista sem repetição</td><td><code>=ÚNICO(tVendas[Canal])</code></td></tr>
+<tr><td><code>CLASSIFICAR</code></td><td>Ordena uma lista</td><td><code>=CLASSIFICAR(ÚNICO(tVendas[Pacote]))</code></td></tr>
+<tr><td><code>CLASSIFICARPOR</code></td><td>Ordena uma lista usando outra</td><td><code>=CLASSIFICARPOR(C2#;D2#;-1)</code></td></tr>
+<tr><td><code>FILTRO</code></td><td>Traz as linhas que atendem às condições</td><td><code>=FILTRO(tVendas;(...=B1)*(...=B2);"Nada")</code></td></tr>
+<tr><td><code>A2#</code></td><td>Todo o despejo que começa em A2</td><td><code>=LINS(A5#)</code></td></tr>
+</table></div>
+<div class="rules" style="margin-top:8px">
+<div><h3 class="yes">Faça</h3><ul>
+<li>Deixe <strong>espaço livre</strong> embaixo e ao lado de fórmulas que despejam.</li>
+<li>Use <strong>#</strong> para apontar para um despejo, em vez de um intervalo fixo.</li>
+<li>Use <strong>*</strong> para juntar condições com E e <strong>+</strong> para OU dentro do FILTRO.</li>
+<li>Escreva o terceiro argumento do FILTRO, para não aparecer #CALC! quando nada for encontrado.</li>
+</ul></div>
+<div><h3 class="no">Evite</h3><ul>
+<li>Digitar dentro da área de um despejo: dá <strong>#DESPEJAR!</strong>.</li>
+<li>Usar nomes de função em inglês ou errados: dá <strong>#NOME?</strong> (FILTER e FILTRAR não funcionam no Excel em português).</li>
+<li>Colocar fórmula que despeja dentro de uma <strong>Tabela</strong> (Ctrl+Alt+T): tabelas não aceitam despejo.</li>
+<li>Mandar o arquivo para quem usa Excel 2019 ou mais antigo sem avisar.</li>
+</ul></div>
+</div>
+</section>
+<section class="end">
+<div class="eyebrow" style="color:var(--accent-soft)">Desafio final</div>
+<h2>Agora é com você</h2>
+<ul>
+<li>Faça uma lista com <strong>ÚNICO</strong> das <strong>categorias</strong> de pacote (Praia, Cultural, Inverno…) em ordem alfabética.</li>
+<li>Monte o <strong>ranking de canais</strong> por faturamento confirmado usando ÚNICO, SOMASES e CLASSIFICARPOR.</li>
+<li>Na aba Filtro, crie uma terceira lista em <strong>B3</strong> com as <strong>UFs</strong> (use ÚNICO) e coloque essa condição no FILTRO.</li>
+<li>Troque o <strong>*</strong> por <strong>+</strong> no FILTRO e explique o que mudou no resultado e no número de linhas.</li>
+<li>Desafio extra: mostre só as colunas Data_Venda, Pacote e Valor_Venda do resultado usando <code>ESCOLHERCOLS</code>.</li>
+</ul>
+</section>
+</main></div>
+<div class="lightbox" id="lb" hidden><img alt="" id="lbimg"></div>
+<script>
+(function(){
+  var total=29;
+  var boxes=[].slice.call(document.querySelectorAll('.done input'));
+  var saved={};
+  try{saved=JSON.parse(localStorage.getItem('aula10-funcoes-passos')||'{}')||{};}catch(e){}
+  function upd(){var c=boxes.filter(function(b){return b.checked}).length;
+    document.getElementById('cnt').textContent=c;document.getElementById('barfill').style.width=(c/total*100)+'%';}
+  boxes.forEach(function(b){ if(saved[b.dataset.step]) b.checked=true;
+    b.addEventListener('change',function(){saved[b.dataset.step]=b.checked;
+      try{localStorage.setItem('aula10-funcoes-passos',JSON.stringify(saved))}catch(e){} upd();});});
+  upd();
+  var lb=document.getElementById('lb'),li=document.getElementById('lbimg');
+  document.querySelectorAll('button.zoom').forEach(function(btn){btn.addEventListener('click',function(){
+    var im=btn.querySelector('img');li.src=im.src;li.alt=im.alt;lb.hidden=false;});});
+  lb.addEventListener('click',function(){lb.hidden=true});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.hidden=true});
+})();
+</script>
+
+</body></html>
