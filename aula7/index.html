@@ -1,47 +1,535 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aula 5: PROCV, PROCX e �NDICE + CORRESP � Braga Treinamentos</title>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+
+<title>Aula de Tabela Dinâmica</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Lexend:wght@300;400;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Lexend:wght@300;400;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-:root{--bg:#0f1a1a;--ink:#e3eeeb;--accent:#4cc2ae;--muted:#9db2ae;--line:#2a3a38;--gold:#f5c518;color-scheme:dark}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--ink);font-family:"Lexend","Segoe UI",system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}
-.card{max-width:580px;width:100%;text-align:center;display:grid;gap:22px}
-.badge{display:inline-flex;align-items:center;gap:10px;background:#172221;border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:0 auto}
-.num-big{font-family:"Bricolage Grotesque",system-ui;font-size:5rem;font-weight:800;color:var(--line);line-height:1;letter-spacing:-.04em}
-h1{font-family:"Bricolage Grotesque",system-ui;font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:800;line-height:1.1;letter-spacing:-.02em}
-.sub{font-size:1rem;color:var(--muted);line-height:1.6;max-width:44ch;margin:0 auto}
-.countdown{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.unit{background:#172221;border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:66px}
-.cnum{font-family:"Bricolage Grotesque",system-ui;font-size:2rem;font-weight:800;color:var(--accent);line-height:1}
-.clbl{font-family:"JetBrains Mono",monospace;font-size:.62rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-top:3px}
-.links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.back{display:inline-flex;align-items:center;gap:7px;color:var(--muted);text-decoration:none;font-size:.88rem;background:#172221;border:1px solid var(--line);border-radius:8px;padding:9px 16px;transition:color .2s,border-color .2s}
-.back:hover{color:var(--accent);border-color:var(--accent)}
-.plat a{color:var(--gold);text-decoration:none;font-weight:600}
-.plat a:hover{text-decoration:underline}
-.plat{font-size:.82rem;color:var(--muted)}
-</style></head><body>
-<div class="card">
-  <div class="badge">?? Braga Treinamentos � Excel Avan�ado</div>
-  <div class="num-big">05</div>
-  <h1>PROCV, PROCX e �NDICE + CORRESP</h1>
-  <p class="sub">Buscas avan�adas</p>
-  <div class="countdown">
-    <div class="unit"><div class="cnum" id="d">--</div><div class="clbl">Dias</div></div>
-    <div class="unit"><div class="cnum" id="h">--</div><div class="clbl">Horas</div></div>
-    <div class="unit"><div class="cnum" id="m">--</div><div class="clbl">Min</div></div>
-    <div class="unit"><div class="cnum" id="s">--</div><div class="clbl">Seg</div></div>
-  </div>
-  <p class="plat">Esta aula ser� liberada em breve � <a href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener">bragatreinamentos.com.br</a></p>
-  <div class="links">
-    <a class="back" href="../">? Todas as aulas</a>
-    <a class="back" href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener">?? Plataforma</a>
-  </div>
+/* Layout: um caderno de bordo — trilho de navegação por partes à esquerda, passos em fluxo vertical com print grande */
+:root{
+  --bg:#f3f6f5; --paper:#ffffff; --ink:#14302e; --muted:#566b68;
+  --accent:#0d6b5f; --accent-soft:#d8ece8; --mark:#d92b3a; --tip:#fff4d6; --tip-ink:#6a4a00; --line:#d5dfdc;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Lexend", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1716; --paper:#172221; --ink:#e3eeeb; --muted:#9db2ae;
+  --accent:#4cc2ae; --accent-soft:#1d3a35; --mark:#ff5d6a; --tip:#33290f; --tip-ink:#f4d58a; --line:#2a3a38; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1716; --paper:#172221; --ink:#e3eeeb; --muted:#9db2ae;
+  --accent:#4cc2ae; --accent-soft:#1d3a35; --mark:#ff5d6a; --tip:#33290f; --tip-ink:#f4d58a; --line:#2a3a38; color-scheme:dark}
+*{box-sizing:border-box} img{max-width:100%} .lightbox[hidden]{display:none}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.65;font-weight:300}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 80px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)} nav.rail{display:none}}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+strong{font-weight:600}
+header.hero{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center;padding-block:12px 8px}
+@media (max-width:900px){header.hero{grid-template-columns:minmax(0,1fr)}}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+header.hero h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;letter-spacing:-.02em;margin-block:8px 14px}
+header.hero p{max-width:60ch;margin:0 0 10px}
+.ticket{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:10px}
+.ticket img{border-radius:8px;border:1px solid var(--line);display:block}
+.ticket .cap{font-size:.85rem;color:var(--muted)}
+nav.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;font-size:.9rem;display:grid;gap:4px}
+nav.rail .label{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+nav.rail a{color:var(--ink);text-decoration:none;padding:6px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline}
+nav.rail a:hover,nav.rail a:focus-visible{background:var(--accent-soft);outline:none}
+nav.rail a span{font-family:var(--mono);color:var(--accent);font-size:.8rem}
+.progress{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.bar{height:8px;background:var(--accent-soft);border-radius:99px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+main{min-width:0;display:grid;gap:56px}
+section.why{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;display:grid;gap:14px}
+section.why h2{font-size:1.9rem}
+.reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.reasons div{border-top:3px solid var(--accent);padding-top:10px}
+.reasons h3{font-size:1.1rem;margin-bottom:4px}
+.reasons p{margin:0;font-size:.95rem}
+.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:.92rem;color:var(--muted)}
+.legend b{color:var(--mark);font-weight:600}
+.part{display:grid;gap:26px;scroll-margin-top:16px}
+.part-head{display:grid;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+.part-head .eyebrow{font-size:.8rem}
+.part-head h2{font-size:clamp(1.7rem,3.6vw,2.4rem);font-weight:800}
+.part-head p{margin:0;max-width:68ch}
+.step{display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;scroll-margin-top:16px}
+@media (max-width:600px){.step{grid-template-columns:minmax(0,1fr)}}
+.num{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--accent);line-height:1}
+.num small{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;color:var(--muted);font-weight:500;margin-top:4px}
+.body{min-width:0;display:grid;gap:12px}
+.body h3{font-size:1.35rem;font-weight:600}
+.body p{margin:0;max-width:70ch}
+.body ol.mini,.body ul.mini{margin:0;padding-left:1.3em;display:grid;gap:6px;max-width:70ch}
+kbd{font-family:var(--mono);font-size:.82em;background:var(--paper);border:1px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:1px 7px;white-space:nowrap}
+code,pre.formula{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);border-radius:6px;padding:2px 6px;overflow-wrap:anywhere}
+pre.formula{margin:0;padding:12px 14px;font-size:.95rem;overflow-x:auto;white-space:pre}
+figure{margin:0;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px}
+figure button{all:unset;cursor:zoom-in;display:block;border-radius:6px}
+figure button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+.tip{background:var(--tip);color:var(--tip-ink);border-radius:10px;padding:10px 14px;font-size:.93rem;max-width:70ch}
+.tip strong{font-weight:600}
+.done{display:inline-flex;align-items:center;gap:10px;font-size:.92rem;color:var(--muted);cursor:pointer;user-select:none;width:max-content}
+.done input{width:20px;height:20px;accent-color:var(--accent)}
+section.end{background:var(--ink);color:var(--bg);border-radius:16px;padding:28px;display:grid;gap:12px}
+section.end h2{font-size:1.9rem}
+section.end ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.lightbox{position:fixed;inset:0;background:rgba(5,12,11,.88);display:grid;place-items:center;padding:16px;z-index:10;cursor:zoom-out}
+.lightbox img{max-width:100%;max-height:100%;border-radius:8px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.prof-strip{display:flex;align-items:center;gap:12px;margin-top:18px;padding:10px 14px;background:var(--paper);border:1px solid var(--line);border-radius:12px;width:max-content;max-width:100%}
+.prof-strip img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #f5c518;flex-shrink:0}
+.prof-strip .pinfo{display:grid;gap:1px}
+.prof-strip .pname{font-family:var(--display);font-weight:700;font-size:.97rem;color:var(--ink)}
+.prof-strip .pplat{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;color:#b8920a;text-transform:uppercase}
+a.prof-strip{text-decoration:none;transition:box-shadow .18s,transform .15s}
+a.prof-strip:hover{box-shadow:0 4px 18px rgba(13,107,95,.18);transform:translateY(-1px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .prof-strip{border-color:#3a5040}}
+:root[data-theme="dark"] .prof-strip{border-color:#3a5040}
+.dl-btn{display:inline-flex;align-items:center;gap:9px;margin-top:16px;padding:11px 20px;background:var(--accent);color:#fff;font-family:var(--body);font-size:.93rem;font-weight:600;border-radius:10px;text-decoration:none;transition:background .18s,transform .15s;border:none;cursor:pointer}
+.dl-btn:hover{background:#0a5a4f;transform:translateY(-2px)}
+.dl-btn svg{flex-shrink:0}
+.dl-info{font-size:.78rem;color:var(--muted);margin-top:5px}
+.next-aula{background:linear-gradient(135deg,#0d2e2a 0%,#0f1a1a 100%);border:1px solid var(--line);border-radius:16px;padding:28px;display:grid;gap:14px;text-align:center}
+.next-aula .eyebrow{color:#f5c518}
+.next-aula h2{font-family:var(--display);font-size:1.7rem;font-weight:800;color:#e3eeeb}
+.next-aula p{color:#9db2ae;margin:0;max-width:52ch;margin-inline:auto}
+.next-btn{display:inline-flex;align-items:center;gap:9px;padding:12px 24px;background:#f5c518;color:#0f1a1a;font-family:var(--body);font-size:.95rem;font-weight:700;border-radius:10px;text-decoration:none;transition:background .18s,transform .15s;margin-top:4px}
+.next-btn:hover{background:#e0b014;transform:translateY(-2px)}
+</style>
+
+<div class="wrap">
+<header class="hero">
+<div>
+<div class="eyebrow">Excel · Aula prática · Agência de Viagens</div>
+<a class="prof-strip" href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener" title="Acessar a Plataforma Braga Treinamentos"><img src="img/professor.jpg" alt="Professor Johnny Braga"><div class="pinfo"><span class="pname">Prof. Johnny Braga de Oliveira</span><span class="pplat">🎓 Braga Treinamentos · clique para acessar a plataforma</span></div></a>
+<h1>Aula de Tabela Dinâmica</h1>
+<p>Olá, turma! Hoje eu vou ensinar vocês a transformar 1.380 linhas de vendas de uma agência de viagens em um painel bonito, que responde perguntas com um clique.</p>
+<p>Eu fiz cada passo de verdade no Excel e tirei um print de <strong>cada clique</strong>. O <b style="color:var(--mark)">círculo vermelho</b> mostra onde clicar. Sigam na ordem, sem pular, e no final vocês terão o mesmo dashboard da imagem ao lado.</p>
+<a class="dl-btn" href="Aula3_Agencia_Viagens.xlsx" download><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Baixar planilha da aula (.xlsx)</a>
+<div class="dl-info">📁 Aula3_Agencia_Viagens.xlsx · 229 KB · Excel 2016 ou superior</div>
+<div class="dl-info" style="margin-top:10px">🌐 Acesse mais aulas em <a href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none">bragatreinamentos.com.br</a></div>
 </div>
+<div class="ticket"><img src="img/p64.jpg" alt="Dashboard final com três gráficos e três segmentações" loading="eager"><div class="cap">É isto que vocês vão construir até o fim da aula.</div></div>
+</header>
+<nav class="rail" aria-label="Partes da aula"><div class="label">Roteiro</div>
+<a href="#porque"><span>00</span>Por que usar</a>
+<a href="#parte1"><span>01</span>Conhecer a nossa planilha</a>
+<a href="#parte2"><span>02</span>Preparar a tabela de Vendas</a>
+<a href="#parte3"><span>03</span>A primeira tabela dinâmica: vendas por categoria</a>
+<a href="#parte4"><span>04</span>Segunda tabela dinâmica: vendas por mês</a>
+<a href="#parte5"><span>05</span>Terceira tabela dinâmica: vendas por canal</a>
+<a href="#parte6"><span>06</span>Transformar tabelas em gráficos</a>
+<a href="#parte7"><span>07</span>Montar o Dashboard</a>
+<a href="#parte8"><span>08</span>Segmentação de dados: os botões que filtram tudo</a>
+<a href="#parte9"><span>09</span>Brincar com o Dashboard</a>
+<div class="progress"><div style="font-size:.85rem">Passos feitos: <strong id="cnt">0</strong> de 64</div><div class="bar"><i id="barfill"></i></div></div>
+</nav>
+<main>
+<section class="why" id="porque">
+<div class="eyebrow">Antes de clicar</div>
+<h2>Por que a tabela dinâmica é tão boa?</h2>
+<p>Imaginem que o dono da agência pergunta: “Qual tipo de viagem mais vende? E em São Paulo? E só as vendas confirmadas?”. Para responder sem tabela dinâmica, vocês teriam que filtrar, somar, copiar e refazer tudo a cada pergunta. Com a tabela dinâmica, vocês arrastam um campo e a resposta aparece.</p>
+<div class="reasons">
+<div><h3>Resume em segundos</h3><p>1.380 linhas viram 7 linhas de resposta, sem nenhuma fórmula de soma.</p></div>
+<div><h3>Não estraga os dados</h3><p>Ela só lê a tabela de Vendas. Os dados originais ficam intactos.</p></div>
+<div><h3>Muda de ideia fácil</h3><p>Quer ver por canal em vez de categoria? Troca o campo e pronto.</p></div>
+<div><h3>Segmentação filtra tudo junto</h3><p>Um botão grande filtra vários gráficos ao mesmo tempo. Qualquer pessoa sabe usar.</p></div>
+</div>
+<div class="legend"><span><b>◯ Círculo</b> = clique aqui</span><span><b>▭ Retângulo</b> = olhe com atenção</span><span><b>botão DIREITO</b> = use o botão da direita do mouse</span><span><b>2 cliques rápidos</b> = clique duas vezes seguidas</span></div>
+<p style="font-size:.92rem;color:var(--muted)">Toque em qualquer print para ver em tamanho grande. Marquem “Fiz este passo” para acompanhar o progresso (fica salvo só no seu navegador).</p>
+</section>
+<section class="part" id="parte1"><div class="part-head"><div class="eyebrow">Parte 1 de 9</div><h2>Conhecer a nossa planilha</h2><p>Antes de construir qualquer coisa, eu quero que vocês conheçam o material. É como montar um quebra-cabeça: primeiro a gente olha as peças.</p></div>
+<article class="step" id="passo1"><div class="num">1<small>PASSO</small></div><div class="body">
+<h3>Abra o arquivo e olhe as abas lá embaixo</h3><p>Abram o arquivo <strong>Aula3_Agencia_Viagens.xlsx</strong> com dois cliques nele. O Excel vai abrir na aba <strong>Clientes</strong>.</p><p>Olhem a parte de <strong>baixo</strong> da tela. Ali tem três etiquetas, que a gente chama de <em>abas</em>: <strong>Clientes</strong>, <strong>Pacotes</strong> e <strong>Vendas</strong>. Cada aba é uma folha diferente do caderno.</p><p>Agora cliquem <strong>uma vez</strong> na aba <strong>Vendas</strong>, onde está o círculo vermelho.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 1"><img src="img/p01.jpg" alt="Print do passo 1: Abra o arquivo e olhe as abas lá embaixo" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Clientes guarda quem compra. Pacotes guarda as viagens. Vendas guarda cada compra que aconteceu, com 1.380 linhas.</div>
+<label class="done"><input type="checkbox" id="ok1" data-step="1"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte2"><div class="part-head"><div class="eyebrow">Parte 2 de 9</div><h2>Preparar a tabela de Vendas</h2><p>A aba Vendas só tem números no lugar dos nomes: em vez de “Serra Gaúcha” está escrito 3. Ninguém entende um relatório cheio de códigos. Por isso eu vou ensinar vocês a trazer o nome do pacote, a categoria da viagem e o estado do cliente para dentro da tabela de Vendas.</p></div>
+<article class="step" id="passo2"><div class="num">2<small>PASSO</small></div><div class="body">
+<h3>Clique na primeira célula vazia ao lado da tabela</h3><p>Vejam que a tabela termina na coluna <strong>L</strong> (Avaliacao). A primeira coluna vazia é a <strong>M</strong>.</p><p>Cliquem <strong>uma vez</strong> na célula <strong>M1</strong>, onde está o círculo vermelho. Ela vai ficar com uma borda verde.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 2"><img src="img/p02.jpg" alt="Print do passo 2: Clique na primeira célula vazia ao lado da tabela" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Confiram no cantinho de cima, à esquerda (a Caixa de Nome). Tem que estar escrito M1.</div>
+<label class="done"><input type="checkbox" id="ok2" data-step="2"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo3"><div class="num">3<small>PASSO</small></div><div class="body">
+<h3>Escreva o nome da coluna e aperte Enter</h3><p>Digitem a palavra <strong>Pacote</strong> e apertem a tecla <kbd>Enter</kbd>.</p><p>Olhem que mágica: a coluna M ficou com a mesma cor da tabela. O Excel percebeu que vocês estão aumentando a tabela e pintou a coluna nova sozinho.</p><p>Depois do Enter, o Excel desce para a célula <strong>M2</strong>, que está marcada no print. É nela que vamos escrever a fórmula.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 3"><img src="img/p03.jpg" alt="Print do passo 3: Escreva o nome da coluna e aperte Enter" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok3" data-step="3"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo4"><div class="num">4<small>PASSO</small></div><div class="body">
+<h3>Digite a fórmula PROCX</h3><p>Com a célula <strong>M2</strong> selecionada, digitem exatamente isto (letra por letra, sem espaço):</p><pre class="formula">=PROCX(E2;tPacotes[ID_Pacote];tPacotes[Pacote])</pre><p>Traduzindo para a nossa língua: <em>“Excel, pegue o número do pacote que está em E2, procure esse número na lista de pacotes e me devolva o nome do pacote.”</em></p><p>A fórmula aparece também na barra lá em cima (marcada em vermelho). Confiram se está igual.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 4"><img src="img/p04.jpg" alt="Print do passo 4: Digite a fórmula PROCX" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Usem ponto e vírgula ( ; ) entre as partes. Se o seu Excel estiver em inglês, a função se chama XLOOKUP e usa vírgula.</div>
+<label class="done"><input type="checkbox" id="ok4" data-step="4"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo5"><div class="num">5<small>PASSO</small></div><div class="body">
+<h3>Aperte Enter e veja a coluna inteira se preencher</h3><p>Apertem <kbd>Enter</kbd>. A coluna inteira, das 1.380 linhas, se preenche sozinha com os nomes dos pacotes: Foz do Iguaçu, Machu Picchu, Nordeste Encantado…</p><p>Vocês escreveram a fórmula uma vez só, e a tabela copiou para baixo. Isso acontece porque os dados estão numa <strong>Tabela do Excel</strong> (aquela listrada de laranja).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 5"><img src="img/p05.jpg" alt="Print do passo 5: Aperte Enter e veja a coluna inteira se preencher" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok5" data-step="5"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo6"><div class="num">6<small>PASSO</small></div><div class="body">
+<h3>Repita para Categoria e UF</h3><p>Agora façam o mesmo duas vezes, sempre na próxima coluna vazia:</p><ol class="mini"><li>Cliquem em <strong>N1</strong>, digitem <strong>Categoria</strong> e <kbd>Enter</kbd>. Em <strong>N2</strong> digitem<br><code>=PROCX(E2;tPacotes[ID_Pacote];tPacotes[Categoria])</code> e <kbd>Enter</kbd>.</li><li>Cliquem em <strong>O1</strong>, digitem <strong>UF</strong> e <kbd>Enter</kbd>. Em <strong>O2</strong> digitem<br><code>=PROCX(D2;tClientes[ID_Cliente];tClientes[UF])</code> e <kbd>Enter</kbd>.</li></ol><p>No final, a tabela de Vendas tem três colunas novas, marcadas em vermelho no print: <strong>Pacote</strong>, <strong>Categoria</strong> e <strong>UF</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 6"><img src="img/p06.jpg" alt="Print do passo 6: Repita para Categoria e UF" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Atenção: a UF usa a coluna D (ID_Cliente), porque o estado mora na aba Clientes. As outras duas usam a coluna E (ID_Pacote).</div>
+<label class="done"><input type="checkbox" id="ok6" data-step="6"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte3"><div class="part-head"><div class="eyebrow">Parte 3 de 9</div><h2>A primeira tabela dinâmica: vendas por categoria</h2><p>Agora começa a parte boa. Eu quero saber: qual tipo de viagem vende mais? Praia? Cultural? Neve? Com 1.380 linhas, somar na mão levaria a tarde toda. A tabela dinâmica responde em três cliques.</p></div>
+<article class="step" id="passo7"><div class="num">7<small>PASSO</small></div><div class="body">
+<h3>Abra a guia Inserir</h3><p>Cliquem em <strong>qualquer célula dentro da tabela</strong> de Vendas (pode ser qualquer número da tabela). Isso é importante: o Excel precisa saber de qual tabela vocês estão falando.</p><p>Depois cliquem na palavra <strong>Inserir</strong>, lá no menu de cima, onde está o círculo vermelho.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 7"><img src="img/p07.jpg" alt="Print do passo 7: Abra a guia Inserir" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok7" data-step="7"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo8"><div class="num">8<small>PASSO</small></div><div class="body">
+<h3>Clique no botão Tabela Dinâmica</h3><p>A faixa de botões mudou. O primeiro botão da esquerda se chama <strong>Tabela Dinâmica</strong>. Cliquem nele (no desenho, não na setinha de baixo).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 8"><img src="img/p08.jpg" alt="Print do passo 8: Clique no botão Tabela Dinâmica" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Se aparecer um menu pequeno, escolham “Da Tabela/Intervalo”.</div>
+<label class="done"><input type="checkbox" id="ok8" data-step="8"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo9"><div class="num">9<small>PASSO</small></div><div class="body">
+<h3>Confira a janela e clique em OK</h3><p>Abriu uma janelinha. Vamos conferir duas coisas antes de clicar:</p><ol class="mini"><li>Em <strong>Tabela/Intervalo</strong> tem que estar escrito <strong>tVendas</strong>. É o nome da nossa tabela de vendas.</li><li>A bolinha marcada tem que ser <strong>Nova Planilha</strong>. Assim a tabela dinâmica nasce numa folha limpinha só para ela.</li></ol><p>Está tudo certo? Então cliquem em <strong>OK</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 9"><img src="img/p09.jpg" alt="Print do passo 9: Confira a janela e clique em OK" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok9" data-step="9"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo10"><div class="num">10<small>PASSO</small></div><div class="body">
+<h3>Conheça a folha nova e o painel de campos</h3><p>O Excel criou uma aba nova (<strong>Planilha1</strong>) e um quadro vazio escrito <em>Tabela dinâmica1</em>.</p><p>Do lado direito apareceu o painel <strong>Campos da Tabela Dinâmica</strong>. Ele tem duas partes, marcadas em vermelho:</p><ul class="mini"><li><strong>Lá em cima, a lista de campos</strong>: são os títulos das colunas da tabela de Vendas.</li><li><strong>Lá embaixo, as quatro caixas</strong>: Filtros, Colunas, Linhas e Valores. É onde a gente monta a pergunta.</li></ul>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 10"><img src="img/p10.jpg" alt="Print do passo 10: Conheça a folha nova e o painel de campos" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Pensem assim: Linhas é “sobre o que eu quero saber” e Valores é “o que eu quero contar ou somar”.</div>
+<label class="done"><input type="checkbox" id="ok10" data-step="10"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo11"><div class="num">11<small>PASSO</small></div><div class="body">
+<h3>Role a lista de campos para baixo</h3><p>A lista é comprida e a nossa coluna Categoria está escondida lá no fim. Coloquem o mouse <strong>em cima da lista</strong> e girem a <strong>rodinha do mouse</strong> para baixo, até aparecer <strong>Categoria</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 11"><img src="img/p11.jpg" alt="Print do passo 11: Role a lista de campos para baixo" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok11" data-step="11"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo12"><div class="num">12<small>PASSO</small></div><div class="body">
+<h3>Marque a caixinha Categoria</h3><p>Cliquem no <strong>quadradinho</strong> ao lado da palavra <strong>Categoria</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 12"><img src="img/p12.jpg" alt="Print do passo 12: Marque a caixinha Categoria" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Se nada acontecer (às vezes o painel fica “cinza”), cliquem uma vez dentro do quadro da tabela dinâmica, na planilha, e depois cliquem no quadradinho de novo.</div>
+<label class="done"><input type="checkbox" id="ok12" data-step="12"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo13"><div class="num">13<small>PASSO</small></div><div class="body">
+<h3>Veja as categorias aparecerem</h3><p>Pronto: as categorias apareceram uma embaixo da outra na planilha (Aventura, Cultural, Inverno, Natureza, Parques, Praia).</p><p>E olhem lá embaixo no painel: <strong>Categoria</strong> foi parar sozinha na caixa <strong>Linhas</strong>. O Excel coloca textos em Linhas automaticamente.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 13"><img src="img/p13.jpg" alt="Print do passo 13: Veja as categorias aparecerem" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok13" data-step="13"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo14"><div class="num">14<small>PASSO</small></div><div class="body">
+<h3>Marque a caixinha Valor_Venda</h3><p>Agora queremos o dinheiro. Rolem a lista um pouquinho para cima até achar <strong>Valor_Venda</strong> e cliquem no quadradinho dele.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 14"><img src="img/p14.jpg" alt="Print do passo 14: Marque a caixinha Valor_Venda" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok14" data-step="14"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo15"><div class="num">15<small>PASSO</small></div><div class="body">
+<h3>Leia o resultado</h3><p>Apareceu a coluna <strong>Soma de Valor_Venda</strong> com o total vendido em cada categoria, e o <strong>Total Geral</strong> no fim: <strong>R$ 14.423.510,00</strong>.</p><p>O Valor_Venda foi para a caixa <strong>Valores</strong>, porque é número. Número a gente soma.</p><p>Vocês acabaram de resumir 1.380 linhas em 7 linhas. Esse é o poder da tabela dinâmica.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 15"><img src="img/p15.jpg" alt="Print do passo 15: Leia o resultado" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok15" data-step="15"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo16"><div class="num">16<small>PASSO</small></div><div class="body">
+<h3>Clique com o botão DIREITO em um valor</h3><p>Está tudo fora de ordem. Eu quero o campeão em primeiro lugar.</p><p>Cliquem com o <strong>botão DIREITO</strong> do mouse (o botão da direita, não o de sempre) em cima de qualquer valor em dinheiro, por exemplo o da linha Aventura.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 16"><img src="img/p16.jpg" alt="Print do passo 16: Clique com o botão DIREITO em um valor" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok16" data-step="16"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo17"><div class="num">17<small>PASSO</small></div><div class="body">
+<h3>Vá em Classificar</h3><p>Abriu um menu comprido. Passem o mouse (ou cliquem) em <strong>Classificar</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 17"><img src="img/p17.jpg" alt="Print do passo 17: Vá em Classificar" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok17" data-step="17"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo18"><div class="num">18<small>PASSO</small></div><div class="body">
+<h3>Escolha “do Maior para o Menor”</h3><p>Apareceu um menu do lado. Cliquem em <strong>Classificar do Maior para o Menor</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 18"><img src="img/p18.jpg" alt="Print do passo 18: Escolha “do Maior para o Menor”" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok18" data-step="18"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo19"><div class="num">19<small>PASSO</small></div><div class="body">
+<h3>Pronto: o ranking das categorias</h3><p>Agora sim: <strong>Praia</strong> em primeiro (R$ 4.667.165,00), <strong>Cultural</strong> quase empatada em segundo e <strong>Natureza</strong> em último.</p><p>Já dá para tirar uma conclusão de verdade: praia e viagens culturais respondem por quase dois terços do faturamento da agência.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 19"><img src="img/p19.jpg" alt="Print do passo 19: Pronto: o ranking das categorias" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok19" data-step="19"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo20"><div class="num">20<small>PASSO</small></div><div class="body">
+<h3>Dê dois cliques no nome da aba</h3><p>“Planilha1” é um nome que não diz nada. Deem <strong>dois cliques rápidos</strong> na aba <strong>Planilha1</strong>, lá embaixo. O nome vai ficar selecionado.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 20"><img src="img/p20.jpg" alt="Print do passo 20: Dê dois cliques no nome da aba" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok20" data-step="20"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo21"><div class="num">21<small>PASSO</small></div><div class="body">
+<h3>Escreva TD_Categoria e aperte Enter</h3><p>Digitem <strong>TD_Categoria</strong> e apertem <kbd>Enter</kbd>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 21"><img src="img/p21.jpg" alt="Print do passo 21: Escreva TD_Categoria e aperte Enter" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> TD quer dizer Tabela Dinâmica. Usar sempre o mesmo começo ajuda a achar as abas depois.</div>
+<label class="done"><input type="checkbox" id="ok21" data-step="21"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte4"><div class="part-head"><div class="eyebrow">Parte 4 de 9</div><h2>Segunda tabela dinâmica: vendas por mês</h2><p>Agora eu quero ver o tempo: em que meses a agência vende mais? Vocês vão repetir o começo (é igual à Parte 3) e depois aprender um truque com datas.</p></div>
+<article class="step" id="passo22"><div class="num">22<small>PASSO</small></div><div class="body">
+<h3>Crie a tabela e marque Data_Venda</h3><p>Repitam os passos que vocês já sabem:</p><ol class="mini"><li>Cliquem na aba <strong>Vendas</strong> e em qualquer célula da tabela.</li><li><strong>Inserir</strong> → <strong>Tabela Dinâmica</strong> → confiram <strong>tVendas</strong> e <strong>Nova Planilha</strong> → <strong>OK</strong>.</li></ol><p>Na folha nova, cliquem no quadradinho de <strong>Data_Venda</strong> (é o segundo da lista).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 22"><img src="img/p22.jpg" alt="Print do passo 22: Crie a tabela e marque Data_Venda" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok22" data-step="22"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo23"><div class="num">23<small>PASSO</small></div><div class="body">
+<h3>O Excel agrupou as datas sozinho</h3><p>Olhem só: em vez de mostrar 600 datas diferentes, o Excel mostrou <strong>2025</strong> e <strong>2026</strong>.</p><p>Na caixa <strong>Linhas</strong> apareceram três campos novos: <em>Anos</em>, <em>Trimestres</em> e <em>Meses</em>. O Excel quebrou a data em pedaços para a gente.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 23"><img src="img/p23.jpg" alt="Print do passo 23: O Excel agrupou as datas sozinho" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok23" data-step="23"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo24"><div class="num">24<small>PASSO</small></div><div class="body">
+<h3>Clique com o botão direito em 2025</h3><p>Eu não quero trimestres, só anos e meses. Cliquem com o <strong>botão DIREITO</strong> em cima do <strong>2025</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 24"><img src="img/p24.jpg" alt="Print do passo 24: Clique com o botão direito em 2025" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok24" data-step="24"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo25"><div class="num">25<small>PASSO</small></div><div class="body">
+<h3>Escolha Agrupar…</h3><p>No menu, cliquem em <strong>Agrupar…</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 25"><img src="img/p25.jpg" alt="Print do passo 25: Escolha Agrupar…" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok25" data-step="25"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo26"><div class="num">26<small>PASSO</small></div><div class="body">
+<h3>Desmarque Trimestres</h3><p>Abriu a janela <strong>Agrupamento</strong>. Na lista <strong>Por</strong> estão pintados de azul: Meses, Trimestres e Anos.</p><p>Cliquem <strong>uma vez</strong> em <strong>Trimestres</strong> para tirar a cor azul dele.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 26"><img src="img/p26.jpg" alt="Print do passo 26: Desmarque Trimestres" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok26" data-step="26"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo27"><div class="num">27<small>PASSO</small></div><div class="body">
+<h3>Confira e clique em OK</h3><p>Agora só <strong>Meses</strong> e <strong>Anos</strong> estão azuis (marcados no print). Cliquem em <strong>OK</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 27"><img src="img/p27.jpg" alt="Print do passo 27: Confira e clique em OK" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok27" data-step="27"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo28"><div class="num">28<small>PASSO</small></div><div class="body">
+<h3>Os meses apareceram</h3><p>Cada ano agora mostra seus meses: jan, fev, mar… E na caixa Linhas ficaram só <strong>Anos</strong> e <strong>Meses</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 28"><img src="img/p28.jpg" alt="Print do passo 28: Os meses apareceram" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok28" data-step="28"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo29"><div class="num">29<small>PASSO</small></div><div class="body">
+<h3>Truque: deixe o painel mais fácil de usar</h3><p>A lista de campos é pequena e dá trabalho rolar. Vamos arrumar isso. Cliquem na <strong>engrenagem</strong> que fica no alto do painel, à direita.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 29"><img src="img/p29.jpg" alt="Print do passo 29: Truque: deixe o painel mais fácil de usar" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok29" data-step="29"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo30"><div class="num">30<small>PASSO</small></div><div class="body">
+<h3>Escolha “Lado a Lado”</h3><p>Cliquem em <strong>Seções Campos e Áreas Lado a Lado</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 30"><img src="img/p30.jpg" alt="Print do passo 30: Escolha “Lado a Lado”" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok30" data-step="30"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo31"><div class="num">31<small>PASSO</small></div><div class="body">
+<h3>Agora todos os campos aparecem: marque Valor_Venda</h3><p>A lista ficou alta e mostra todos os campos de uma vez (caixa vermelha). Cliquem no quadradinho de <strong>Valor_Venda</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 31"><img src="img/p31.jpg" alt="Print do passo 31: Agora todos os campos aparecem: marque Valor_Venda" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok31" data-step="31"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo32"><div class="num">32<small>PASSO</small></div><div class="body">
+<h3>Renomeie a aba para TD_Mes</h3><p>Os valores apareceram mês a mês. Vejam que <strong>julho</strong> é o mês mais forte nos dois anos: são as férias escolares.</p><p>Deem dois cliques na aba nova, digitem <strong>TD_Mes</strong> e <kbd>Enter</kbd>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 32"><img src="img/p32.jpg" alt="Print do passo 32: Renomeie a aba para TD_Mes" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok32" data-step="32"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte5"><div class="part-head"><div class="eyebrow">Parte 5 de 9</div><h2>Terceira tabela dinâmica: vendas por canal</h2><p>A última pergunta: por onde os clientes compram? Site, WhatsApp, loja ou agente corporativo? Agora vocês já conseguem fazer sozinhos.</p></div>
+<article class="step" id="passo33"><div class="num">33<small>PASSO</small></div><div class="body">
+<h3>Monte a tabela por Canal</h3><ol class="mini"><li>Aba <strong>Vendas</strong> → clique numa célula da tabela.</li><li><strong>Inserir</strong> → <strong>Tabela Dinâmica</strong> → <strong>OK</strong>.</li><li>Marquem <strong>Canal</strong> e depois <strong>Valor_Venda</strong>.</li><li>Renomeiem a aba para <strong>TD_Canal</strong>.</li></ol><p>Resultado: o <strong>Site</strong> vende R$ 6.519.345,00, quase metade de tudo.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 33"><img src="img/p33.jpg" alt="Print do passo 33: Monte a tabela por Canal" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Se um quadradinho não marcar no primeiro clique, cliquem de novo. O primeiro clique às vezes só “acorda” o painel.</div>
+<label class="done"><input type="checkbox" id="ok33" data-step="33"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte6"><div class="part-head"><div class="eyebrow">Parte 6 de 9</div><h2>Transformar tabelas em gráficos</h2><p>Número é ótimo para quem gosta de número. Mas o chefe da agência quer bater o olho e entender. Para isso servem os gráficos dinâmicos: eles ficam ligados à tabela dinâmica e mudam junto com ela.</p></div>
+<article class="step" id="passo34"><div class="num">34<small>PASSO</small></div><div class="body">
+<h3>Clique em Gráfico Dinâmico</h3><p>Ainda na aba <strong>TD_Canal</strong>, com uma célula da tabela dinâmica selecionada, olhem a guia <strong>Análise de Tabela Dinâmica</strong> lá em cima. Cliquem no botão <strong>Gráfico Dinâmico</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 34"><img src="img/p34.jpg" alt="Print do passo 34: Clique em Gráfico Dinâmico" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Não achou a guia? Cliquem dentro da tabela dinâmica primeiro. Ela só aparece quando a tabela está selecionada.</div>
+<label class="done"><input type="checkbox" id="ok34" data-step="34"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo35"><div class="num">35<small>PASSO</small></div><div class="body">
+<h3>Escolha Pizza</h3><p>Abriu a janela <strong>Inserir Gráfico</strong>. Na lista da esquerda, cliquem em <strong>Pizza</strong>.</p><p>Pizza é boa quando há poucas fatias (aqui são 4 canais) e a gente quer ver quem é o maior pedaço.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 35"><img src="img/p35.jpg" alt="Print do passo 35: Escolha Pizza" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok35" data-step="35"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo36"><div class="num">36<small>PASSO</small></div><div class="body">
+<h3>Clique em OK</h3><p>A pré-visualização mostra a pizza. Cliquem em <strong>OK</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 36"><img src="img/p36.jpg" alt="Print do passo 36: Clique em OK" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok36" data-step="36"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo37"><div class="num">37<small>PASSO</small></div><div class="body">
+<h3>O gráfico apareceu</h3><p>A pizza apareceu em cima da planilha. A fatia verde (Site) é a maior, como a tabela já mostrava.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 37"><img src="img/p37.jpg" alt="Print do passo 37: O gráfico apareceu" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok37" data-step="37"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo38"><div class="num">38<small>PASSO</small></div><div class="body">
+<h3>Clique no título “Total”</h3><p>“Total” não explica nada. Cliquem <strong>uma vez</strong> na palavra <strong>Total</strong>, no alto do gráfico. Vai aparecer uma moldura em volta dela.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 38"><img src="img/p38.jpg" alt="Print do passo 38: Clique no título “Total”" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok38" data-step="38"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo39"><div class="num">39<small>PASSO</small></div><div class="body">
+<h3>Digite o título novo</h3><p>Digitem <strong>Vendas por Canal</strong> e apertem <kbd>Enter</kbd>. O título mudou.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 39"><img src="img/p39.jpg" alt="Print do passo 39: Digite o título novo" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Se o texto novo se misturar com o antigo, cliquem de novo no título, apertem Ctrl + A para selecionar tudo e digitem outra vez.</div>
+<label class="done"><input type="checkbox" id="ok39" data-step="39"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo40"><div class="num">40<small>PASSO</small></div><div class="body">
+<h3>Faça o gráfico de linhas na aba TD_Mes</h3><p>Na aba <strong>TD_Mes</strong>, cliquem numa célula da tabela dinâmica → <strong>Análise de Tabela Dinâmica</strong> → <strong>Gráfico Dinâmico</strong> → <strong>Linhas</strong> → <strong>OK</strong>.</p><p>Troquem o título para <strong>Vendas por Mês</strong>. Depois cliquem na legenda “Total” do lado direito e apertem <kbd>Delete</kbd> para apagá-la.</p><p>Linha é o melhor gráfico para mostrar algo que muda com o tempo: dá para ver os picos de julho.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 40"><img src="img/p40.jpg" alt="Print do passo 40: Faça o gráfico de linhas na aba TD_Mes" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok40" data-step="40"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo41"><div class="num">41<small>PASSO</small></div><div class="body">
+<h3>Faça o gráfico de colunas na aba TD_Categoria</h3><p>Na aba <strong>TD_Categoria</strong>, mesmo caminho: <strong>Gráfico Dinâmico</strong> → deixem <strong>Colunas</strong> (já vem escolhido) → <strong>OK</strong>.</p><p>Título: <strong>Vendas por Categoria</strong>. Apaguem a legenda como antes.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 41"><img src="img/p41.jpg" alt="Print do passo 41: Faça o gráfico de colunas na aba TD_Categoria" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok41" data-step="41"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte7"><div class="part-head"><div class="eyebrow">Parte 7 de 9</div><h2>Montar o Dashboard</h2><p>Dashboard é o “painel do carro” da empresa: tudo importante numa tela só. Vamos criar uma folha nova e trazer os três gráficos para ela.</p></div>
+<article class="step" id="passo42"><div class="num">42<small>PASSO</small></div><div class="body">
+<h3>Clique no + para criar uma folha nova</h3><p>Lá embaixo, depois da última aba, tem um sinal de <strong>+</strong>. Cliquem nele.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 42"><img src="img/p42.jpg" alt="Print do passo 42: Clique no + para criar uma folha nova" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok42" data-step="42"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo43"><div class="num">43<small>PASSO</small></div><div class="body">
+<h3>Chame a folha de Dashboard</h3><p>Deem dois cliques na aba nova, digitem <strong>Dashboard</strong> e <kbd>Enter</kbd>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 43"><img src="img/p43.jpg" alt="Print do passo 43: Chame a folha de Dashboard" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok43" data-step="43"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo44"><div class="num">44<small>PASSO</small></div><div class="body">
+<h3>Abra a guia Exibir</h3><p>Para o painel ficar limpo, vamos esconder as linhas de grade. Cliquem em <strong>Exibir</strong>, no menu de cima.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 44"><img src="img/p44.jpg" alt="Print do passo 44: Abra a guia Exibir" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok44" data-step="44"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo45"><div class="num">45<small>PASSO</small></div><div class="body">
+<h3>Desmarque Linhas de Grade</h3><p>Cliquem no quadradinho <strong>Linhas de Grade</strong> para tirar o ✓. A folha fica branquinha, como uma tela de apresentação.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 45"><img src="img/p45.jpg" alt="Print do passo 45: Desmarque Linhas de Grade" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok45" data-step="45"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo46"><div class="num">46<small>PASSO</small></div><div class="body">
+<h3>Escreva o título do painel</h3><p>Cliquem na célula <strong>B2</strong> e digitem <strong>Dashboard de Vendas – Agência de Viagens</strong> e <kbd>Enter</kbd>.</p><p>Cliquem de novo em B2. Na guia <strong>Página Inicial</strong>, mudem o tamanho da letra para <strong>24</strong> (caixinha marcada) e cliquem no <strong>N</strong> de negrito.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 46"><img src="img/p46.jpg" alt="Print do passo 46: Escreva o título do painel" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok46" data-step="46"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo47"><div class="num">47<small>PASSO</small></div><div class="body">
+<h3>Selecione o gráfico e recorte</h3><p>Vão até a aba <strong>TD_Categoria</strong>. Cliquem <strong>uma vez na borda branca</strong> do gráfico (fora das colunas). Aparecem bolinhas nos cantos: o gráfico está selecionado.</p><p>Agora apertem <kbd>Ctrl</kbd> + <kbd>X</kbd> (segurem Ctrl e apertem X). Isso <strong>recorta</strong> o gráfico, como uma tesoura.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 47"><img src="img/p47.jpg" alt="Print do passo 47: Selecione o gráfico e recorte" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok47" data-step="47"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo48"><div class="num">48<small>PASSO</small></div><div class="body">
+<h3>Na aba Dashboard, clique em D4</h3><p>Voltem para a aba <strong>Dashboard</strong> e cliquem na célula <strong>D4</strong>. É ali que o canto do gráfico vai ficar.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 48"><img src="img/p48.jpg" alt="Print do passo 48: Na aba Dashboard, clique em D4" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok48" data-step="48"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo49"><div class="num">49<small>PASSO</small></div><div class="body">
+<h3>Cole com Ctrl + V</h3><p>Apertem <kbd>Ctrl</kbd> + <kbd>V</kbd>. O gráfico de categorias chegou ao Dashboard.</p><p>Façam igual com os outros dois:</p><ul class="mini"><li>Gráfico de pizza da aba <strong>TD_Canal</strong> → colem na célula <strong>L4</strong>.</li><li>Gráfico de linhas da aba <strong>TD_Mes</strong> → colem na célula <strong>D19</strong>.</li></ul>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 49"><img src="img/p49.jpg" alt="Print do passo 49: Cole com Ctrl + V" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Recortar (Ctrl+X) tira o gráfico de lá e põe aqui. O gráfico continua ligado à sua tabela dinâmica.</div>
+<label class="done"><input type="checkbox" id="ok49" data-step="49"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte8"><div class="part-head"><div class="eyebrow">Parte 8 de 9</div><h2>Segmentação de dados: os botões que filtram tudo</h2><p>Esta é a estrela da aula. Segmentação de dados são botões grandes que filtram as informações com um clique. E o melhor: um botão só pode filtrar os três gráficos ao mesmo tempo.</p></div>
+<article class="step" id="passo50"><div class="num">50<small>PASSO</small></div><div class="body">
+<h3>Selecione um gráfico e clique em Inserir Segmentação de Dados</h3><p>Na aba Dashboard, cliquem em um dos gráficos (eu cliquei no de linhas). Lá em cima aparece a guia <strong>Análise de Gráfico Dinâmico</strong> (caixa vermelha).</p><p>Cliquem no botão <strong>Inserir Segmentação de Dados</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 50"><img src="img/p50.jpg" alt="Print do passo 50: Selecione um gráfico e clique em Inserir Segmentação de Dados" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok50" data-step="50"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo51"><div class="num">51<small>PASSO</small></div><div class="body">
+<h3>Marque Status, UF e Anos</h3><p>Abriu uma lista com todos os campos. Marquem três quadradinhos:</p><ul class="mini"><li><strong>Status</strong>: para separar vendas confirmadas das canceladas;</li><li><strong>UF</strong>: para ver cada estado;</li><li><strong>Anos (Data_Venda)</strong>: para comparar 2025 com 2026.</li></ul>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 51"><img src="img/p51.jpg" alt="Print do passo 51: Marque Status, UF e Anos" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok51" data-step="51"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo52"><div class="num">52<small>PASSO</small></div><div class="body">
+<h3>Clique em OK</h3><p>Confiram os três ✓ e cliquem em <strong>OK</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 52"><img src="img/p52.jpg" alt="Print do passo 52: Clique em OK" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok52" data-step="52"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo53"><div class="num">53<small>PASSO</small></div><div class="body">
+<h3>As segmentações apareceram (ainda bagunçadas)</h3><p>Apareceram três caixas cheias de botões, uma em cima da outra. Calma, vamos organizar já já.</p><p>Mas antes tem uma coisa muito importante: por enquanto, esses botões só controlam <strong>um</strong> gráfico, o que estava selecionado. Vamos ligar nos três.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 53"><img src="img/p53.jpg" alt="Print do passo 53: As segmentações apareceram (ainda bagunçadas)" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok53" data-step="53"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo54"><div class="num">54<small>PASSO</small></div><div class="body">
+<h3>Clique em Conexões de Relatório</h3><p>Cliquem no título de uma segmentação (eu comecei pela <strong>Anos</strong>). Lá em cima aparece a guia <strong>Segmentação</strong>. Cliquem em <strong>Conexões de Relatório</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 54"><img src="img/p54.jpg" alt="Print do passo 54: Clique em Conexões de Relatório" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok54" data-step="54"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo55"><div class="num">55<small>PASSO</small></div><div class="body">
+<h3>Marque as tabelas que faltam</h3><p>A janela mostra as três tabelas dinâmicas. Só a <strong>TD_Mes</strong> está marcada. Cliquem nos quadradinhos de <strong>TD_Canal</strong> e <strong>TD_Categoria</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 55"><img src="img/p55.jpg" alt="Print do passo 55: Marque as tabelas que faltam" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok55" data-step="55"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo56"><div class="num">56<small>PASSO</small></div><div class="body">
+<h3>Todas marcadas: clique em OK</h3><p>As três com ✓. Cliquem em <strong>OK</strong>.</p><p><strong>Façam a mesma coisa com as outras duas segmentações</strong> (Status e UF): cliquem no título → Conexões de Relatório → marquem as três → OK.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 56"><img src="img/p56.jpg" alt="Print do passo 56: Todas marcadas: clique em OK" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Se esquecer este passo, o botão filtra um gráfico e os outros ficam parados. É o erro mais comum da turma.</div>
+<label class="done"><input type="checkbox" id="ok56" data-step="56"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo57"><div class="num">57<small>PASSO</small></div><div class="body">
+<h3>Esconda os botões cinza dos gráficos</h3><p>Organizem as segmentações arrastando pelo título para o lado direito dos gráficos, uma embaixo da outra. Para diminuir uma caixa, puxem a bolinha de baixo dela para cima.</p><p>Os gráficos têm uns botões cinza (“Soma de Valor_Venda”, “Categoria”). Para tirar: cliquem com o <strong>botão direito</strong> em um deles e escolham <strong>Ocultar Todos os Botões de Campo no Gráfico</strong>. Repitam em cada gráfico.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 57"><img src="img/p57.jpg" alt="Print do passo 57: Esconda os botões cinza dos gráficos" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Para ver tudo numa tela só, cliquem no 100% lá embaixo, à direita, e escolham Personalizar: 70%.</div>
+<label class="done"><input type="checkbox" id="ok57" data-step="57"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo58"><div class="num">58<small>PASSO</small></div><div class="body">
+<h3>O Dashboard está pronto</h3><p>Três gráficos e três segmentações numa tela só. Parabéns: isso é um dashboard de verdade, igual aos que as empresas usam.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 58"><img src="img/p58.jpg" alt="Print do passo 58: O Dashboard está pronto" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok58" data-step="58"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte9"><div class="part-head"><div class="eyebrow">Parte 9 de 9</div><h2>Brincar com o Dashboard</h2><p>Agora é hora de fazer perguntas e deixar o Dashboard responder.</p></div>
+<article class="step" id="passo59"><div class="num">59<small>PASSO</small></div><div class="body">
+<h3>Clique em Confirmada</h3><p>Na segmentação <strong>Status</strong>, cliquem no botão <strong>Confirmada</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 59"><img src="img/p59.jpg" alt="Print do passo 59: Clique em Confirmada" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok59" data-step="59"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo60"><div class="num">60<small>PASSO</small></div><div class="body">
+<h3>Os três gráficos mudaram juntos</h3><p>O botão Confirmada ficou azul e o Cancelada ficou branco. Os três gráficos mudaram ao mesmo tempo: agora só mostram vendas que aconteceram de verdade.</p><p>Isso é importante: com as canceladas o total era R$ 14,4 milhões; só com as confirmadas cai para <strong>R$ 12,5 milhões</strong>. Quase dois milhões eram vendas que não se concretizaram.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 60"><img src="img/p60.jpg" alt="Print do passo 60: Os três gráficos mudaram juntos" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok60" data-step="60"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo61"><div class="num">61<small>PASSO</small></div><div class="body">
+<h3>Agora clique em SP</h3><p>Na segmentação <strong>UF</strong>, cliquem em <strong>SP</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 61"><img src="img/p61.jpg" alt="Print do passo 61: Agora clique em SP" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok61" data-step="61"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo62"><div class="num">62<small>PASSO</small></div><div class="body">
+<h3>Descoberta: em São Paulo o campeão muda</h3><p>Olhem o gráfico de categorias: em São Paulo, <strong>Cultural</strong> passou <strong>Praia</strong>! No Brasil todo a Praia ganha, mas os clientes paulistas preferem viagens culturais.</p><p>Essa descoberta levou dois cliques. Sem tabela dinâmica seriam horas de filtro e soma.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 62"><img src="img/p62.jpg" alt="Print do passo 62: Descoberta: em São Paulo o campeão muda" loading="lazy" width="1456" height="752"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Para escolher mais de um botão ao mesmo tempo (por exemplo SP e RJ), segurem a tecla Ctrl enquanto clicam.</div>
+<label class="done"><input type="checkbox" id="ok62" data-step="62"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo63"><div class="num">63<small>PASSO</small></div><div class="body">
+<h3>Limpe os filtros</h3><p>Para voltar a ver tudo, cliquem no <strong>funil com um X vermelho</strong>, no canto de cada segmentação.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 63"><img src="img/p63.jpg" alt="Print do passo 63: Limpe os filtros" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok63" data-step="63"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo64"><div class="num">64<small>PASSO</small></div><div class="body">
+<h3>Salve o trabalho</h3><p>Tudo de volta ao normal. Agora apertem <kbd>Ctrl</kbd> + <kbd>B</kbd> para salvar. No Excel em português o atalho de salvar é Ctrl + B (no inglês é Ctrl + S).</p><p>Missão cumprida!</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 64"><img src="img/p64.jpg" alt="Print do passo 64: Salve o trabalho" loading="lazy" width="1456" height="752"></button></figure>
+<label class="done"><input type="checkbox" id="ok64" data-step="64"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="end">
+<div class="eyebrow" style="color:var(--accent-soft)">Desafio final</div>
+<h2>Agora é com vocês</h2>
+<ul>
+<li>Criem uma quarta tabela dinâmica com <strong>Pacote</strong> em Linhas e <strong>Qtd_Passageiros</strong> em Valores. Qual pacote levou mais gente?</li>
+<li>Adicionem uma segmentação de <strong>Categoria</strong> no Dashboard e liguem nas quatro tabelas.</li>
+<li>Filtrem <strong>2026</strong> e <strong>RJ</strong>. Qual canal vende mais no Rio?</li>
+<li>Lembrem: se a tabela de Vendas ganhar linhas novas, cliquem em <strong>Dados → Atualizar Tudo</strong> para o Dashboard se atualizar.</li>
+</ul>
+</section>
+<section class="next-aula">
+<div class="eyebrow">📅 Braga Treinamentos · Excel Avançado</div>
+<h2>Quer mais? A próxima aula já está chegando!</h2>
+<p>Acompanhe a plataforma Braga Treinamentos e fique por dentro da data de lançamento da próxima aula do curso.</p>
+<div><a class="next-btn" href="../aula8/" target="_blank">⏰ Ver próxima aula</a></div>
+<p style="font-size:.82rem">Ou acesse diretamente <a href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener" style="color:#f5c518;text-decoration:none;font-weight:600">bragatreinamentos.com.br</a></p>
+</section>
+</main></div>
+<div class="lightbox" id="lb" hidden><img alt="" id="lbimg"></div>
 <script>
-var target=new Date(2026,10,1,8,0,0);
-function tick(){var now=new Date(),diff=target-now;if(diff<=0){document.querySelector('.countdown').innerHTML='<p style="color:var(--accent);font-size:1.2rem;font-weight:700">A aula come�a agora! ??</p>';return;}var d=Math.floor(diff/864e5),h=Math.floor((diff%864e5)/36e5),m=Math.floor((diff%36e5)/6e4),s=Math.floor((diff%6e4)/1e3);document.getElementById('d').textContent=String(d).padStart(2,'0');document.getElementById('h').textContent=String(h).padStart(2,'0');document.getElementById('m').textContent=String(m).padStart(2,'0');document.getElementById('s').textContent=String(s).padStart(2,'0');}
-tick();setInterval(tick,1000);
+(function(){
+  var total=64;
+  var boxes=[].slice.call(document.querySelectorAll('.done input'));
+  var saved={};
+  try{saved=JSON.parse(localStorage.getItem('aula-td-passos')||'{}')||{};}catch(e){}
+  function upd(){var c=boxes.filter(function(b){return b.checked}).length;
+    document.getElementById('cnt').textContent=c;document.getElementById('barfill').style.width=(c/total*100)+'%';}
+  boxes.forEach(function(b){ if(saved[b.dataset.step]) b.checked=true;
+    b.addEventListener('change',function(){saved[b.dataset.step]=b.checked;
+      try{localStorage.setItem('aula-td-passos',JSON.stringify(saved))}catch(e){} upd();});});
+  upd();
+  var lb=document.getElementById('lb'),li=document.getElementById('lbimg');
+  document.querySelectorAll('button.zoom').forEach(function(btn){btn.addEventListener('click',function(){
+    var im=btn.querySelector('img');li.src=im.src;li.alt=im.alt;lb.hidden=false;});});
+  lb.addEventListener('click',function(){lb.hidden=true});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.hidden=true});
+})();
 </script>
 </body></html>

@@ -1,47 +1,446 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aula 6: Tabelas do Excel e Valida��o de Dados � Braga Treinamentos</title>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+
+<title>Aula de Macros</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Lexend:wght@300;400;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Lexend:wght@300;400;600&family=JetBrains+Mono:wght@500&display=swap">
 <style>
-:root{--bg:#0f1a1a;--ink:#e3eeeb;--accent:#4cc2ae;--muted:#9db2ae;--line:#2a3a38;--gold:#f5c518;color-scheme:dark}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--ink);font-family:"Lexend","Segoe UI",system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}
-.card{max-width:580px;width:100%;text-align:center;display:grid;gap:22px}
-.badge{display:inline-flex;align-items:center;gap:10px;background:#172221;border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin:0 auto}
-.num-big{font-family:"Bricolage Grotesque",system-ui;font-size:5rem;font-weight:800;color:var(--line);line-height:1;letter-spacing:-.04em}
-h1{font-family:"Bricolage Grotesque",system-ui;font-size:clamp(1.8rem,4.5vw,2.6rem);font-weight:800;line-height:1.1;letter-spacing:-.02em}
-.sub{font-size:1rem;color:var(--muted);line-height:1.6;max-width:44ch;margin:0 auto}
-.countdown{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.unit{background:#172221;border:1px solid var(--line);border-radius:12px;padding:14px 18px;min-width:66px}
-.cnum{font-family:"Bricolage Grotesque",system-ui;font-size:2rem;font-weight:800;color:var(--accent);line-height:1}
-.clbl{font-family:"JetBrains Mono",monospace;font-size:.62rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-top:3px}
-.links{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.back{display:inline-flex;align-items:center;gap:7px;color:var(--muted);text-decoration:none;font-size:.88rem;background:#172221;border:1px solid var(--line);border-radius:8px;padding:9px 16px;transition:color .2s,border-color .2s}
-.back:hover{color:var(--accent);border-color:var(--accent)}
-.plat a{color:var(--gold);text-decoration:none;font-weight:600}
-.plat a:hover{text-decoration:underline}
-.plat{font-size:.82rem;color:var(--muted)}
-</style></head><body>
-<div class="card">
-  <div class="badge">?? Braga Treinamentos � Excel Avan�ado</div>
-  <div class="num-big">06</div>
-  <h1>Tabelas do Excel e Valida��o de Dados</h1>
-  <p class="sub">Listas e controles</p>
-  <div class="countdown">
-    <div class="unit"><div class="cnum" id="d">--</div><div class="clbl">Dias</div></div>
-    <div class="unit"><div class="cnum" id="h">--</div><div class="clbl">Horas</div></div>
-    <div class="unit"><div class="cnum" id="m">--</div><div class="clbl">Min</div></div>
-    <div class="unit"><div class="cnum" id="s">--</div><div class="clbl">Seg</div></div>
-  </div>
-  <p class="plat">Esta aula ser� liberada em breve � <a href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener">bragatreinamentos.com.br</a></p>
-  <div class="links">
-    <a class="back" href="../">? Todas as aulas</a>
-    <a class="back" href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener">?? Plataforma</a>
-  </div>
+/* Layout: um caderno de bordo — trilho de navegação por partes à esquerda, passos em fluxo vertical com print grande */
+:root{
+  --bg:#f3f6f5; --paper:#ffffff; --ink:#14302e; --muted:#566b68;
+  --accent:#0d6b5f; --accent-soft:#d8ece8; --mark:#d92b3a; --tip:#fff4d6; --tip-ink:#6a4a00; --line:#d5dfdc;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Lexend", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1716; --paper:#172221; --ink:#e3eeeb; --muted:#9db2ae;
+  --accent:#4cc2ae; --accent-soft:#1d3a35; --mark:#ff5d6a; --tip:#33290f; --tip-ink:#f4d58a; --line:#2a3a38; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1716; --paper:#172221; --ink:#e3eeeb; --muted:#9db2ae;
+  --accent:#4cc2ae; --accent-soft:#1d3a35; --mark:#ff5d6a; --tip:#33290f; --tip-ink:#f4d58a; --line:#2a3a38; color-scheme:dark}
+*{box-sizing:border-box} img{max-width:100%} .lightbox[hidden]{display:none}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.65;font-weight:300}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 80px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)} nav.rail{display:none}}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15;margin:0}
+strong{font-weight:600}
+header.hero{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:center;padding-block:12px 8px}
+@media (max-width:900px){header.hero{grid-template-columns:minmax(0,1fr)}}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+header.hero h1{font-size:clamp(2.4rem,6vw,4.2rem);font-weight:800;letter-spacing:-.02em;margin-block:8px 14px}
+header.hero p{max-width:60ch;margin:0 0 10px}
+.ticket{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:10px}
+.ticket img{border-radius:8px;border:1px solid var(--line);display:block}
+.ticket .cap{font-size:.85rem;color:var(--muted)}
+nav.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;font-size:.9rem;display:grid;gap:4px}
+nav.rail .label{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+nav.rail a{color:var(--ink);text-decoration:none;padding:6px 10px;border-radius:8px;display:flex;gap:10px;align-items:baseline}
+nav.rail a:hover,nav.rail a:focus-visible{background:var(--accent-soft);outline:none}
+nav.rail a span{font-family:var(--mono);color:var(--accent);font-size:.8rem}
+.progress{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.bar{height:8px;background:var(--accent-soft);border-radius:99px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+main{min-width:0;display:grid;gap:56px}
+section.why{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;display:grid;gap:14px}
+section.why h2{font-size:1.9rem}
+.reasons{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+.reasons div{border-top:3px solid var(--accent);padding-top:10px}
+.reasons h3{font-size:1.1rem;margin-bottom:4px}
+.reasons p{margin:0;font-size:.95rem}
+.legend{display:flex;flex-wrap:wrap;gap:18px;font-size:.92rem;color:var(--muted)}
+.legend b{color:var(--mark);font-weight:600}
+.part{display:grid;gap:26px;scroll-margin-top:16px}
+.part-head{display:grid;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+.part-head .eyebrow{font-size:.8rem}
+.part-head h2{font-size:clamp(1.7rem,3.6vw,2.4rem);font-weight:800}
+.part-head p{margin:0;max-width:68ch}
+.step{display:grid;grid-template-columns:64px minmax(0,1fr);gap:18px;scroll-margin-top:16px}
+@media (max-width:600px){.step{grid-template-columns:minmax(0,1fr)}}
+.num{font-family:var(--display);font-weight:800;font-size:2rem;color:var(--accent);line-height:1}
+.num small{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;color:var(--muted);font-weight:500;margin-top:4px}
+.body{min-width:0;display:grid;gap:12px}
+.body h3{font-size:1.35rem;font-weight:600}
+.body p{margin:0;max-width:70ch}
+.body ol.mini,.body ul.mini{margin:0;padding-left:1.3em;display:grid;gap:6px;max-width:70ch}
+kbd{font-family:var(--mono);font-size:.82em;background:var(--paper);border:1px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:1px 7px;white-space:nowrap}
+code,pre.formula{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);border-radius:6px;padding:2px 6px;overflow-wrap:anywhere}
+pre.formula{margin:0;padding:12px 14px;font-size:.95rem;overflow-x:auto;white-space:pre}
+figure{margin:0;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:8px}
+figure button{all:unset;cursor:zoom-in;display:block;border-radius:6px}
+figure button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+figure img{display:block;width:100%;height:auto;border-radius:6px}
+.tip{background:var(--tip);color:var(--tip-ink);border-radius:10px;padding:10px 14px;font-size:.93rem;max-width:70ch}
+.tip strong{font-weight:600}
+.done{display:inline-flex;align-items:center;gap:10px;font-size:.92rem;color:var(--muted);cursor:pointer;user-select:none;width:max-content}
+.done input{width:20px;height:20px;accent-color:var(--accent)}
+table.cmp{border-collapse:collapse;width:100%;font-size:.93rem;min-width:560px} table.cmp th,table.cmp td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top} table.cmp th{font-family:var(--display);font-weight:600} .tw{overflow-x:auto} .yes{color:var(--accent);font-weight:600} .no{color:var(--mark);font-weight:600} .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px} .rules ul{margin:0;padding-left:1.2em;display:grid;gap:6px} .rules h3{font-size:1.1rem;margin-bottom:6px}
+section.end{background:var(--ink);color:var(--bg);border-radius:16px;padding:28px;display:grid;gap:12px}
+section.end h2{font-size:1.9rem}
+section.end ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.lightbox{position:fixed;inset:0;background:rgba(5,12,11,.88);display:grid;place-items:center;padding:16px;z-index:10;cursor:zoom-out}
+.lightbox img{max-width:100%;max-height:100%;border-radius:8px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.prof-strip{display:flex;align-items:center;gap:12px;margin-top:18px;padding:10px 14px;background:var(--paper);border:1px solid var(--line);border-radius:12px;width:max-content;max-width:100%}
+.prof-strip img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid #f5c518;flex-shrink:0}
+.prof-strip .pinfo{display:grid;gap:1px}
+.prof-strip .pname{font-family:var(--display);font-weight:700;font-size:.97rem;color:var(--ink)}
+.prof-strip .pplat{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;color:#b8920a;text-transform:uppercase}
+a.prof-strip{text-decoration:none;transition:box-shadow .18s,transform .15s}
+a.prof-strip:hover{box-shadow:0 4px 18px rgba(13,107,95,.18);transform:translateY(-1px)}
+.dl-btn{display:inline-flex;align-items:center;gap:9px;margin-top:16px;padding:11px 20px;background:var(--accent);color:#fff;font-family:var(--body);font-size:.93rem;font-weight:600;border-radius:10px;text-decoration:none;transition:background .18s,transform .15s;border:none;cursor:pointer}
+.dl-btn:hover{background:#0a5a4f;transform:translateY(-2px)}
+.dl-btn svg{flex-shrink:0}
+.dl-info{font-size:.78rem;color:var(--muted);margin-top:5px}
+.next-aula{background:linear-gradient(135deg,#0d2e2a 0%,#0f1a1a 100%);border:1px solid var(--line);border-radius:16px;padding:28px;display:grid;gap:14px;text-align:center}
+.next-aula .eyebrow{color:#f5c518}
+.next-aula h2{font-family:var(--display);font-size:1.7rem;font-weight:800;color:#e3eeeb}
+.next-aula p{color:#9db2ae;margin:0;max-width:52ch;margin-inline:auto}
+.next-btn{display:inline-flex;align-items:center;gap:9px;padding:12px 24px;background:#f5c518;color:#0f1a1a;font-family:var(--body);font-size:.95rem;font-weight:700;border-radius:10px;text-decoration:none;transition:background .18s,transform .15s;margin-top:4px}
+.next-btn:hover{background:#e0b014;transform:translateY(-2px)}
+</style>
+
+<div class="wrap">
+<header class="hero">
+<div>
+<div class="eyebrow">Excel · Aula prática · Automação</div>
+<a class="prof-strip" href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener" title="Acessar a Plataforma Braga Treinamentos"><img src="img/professor.jpg" alt="Professor Johnny Braga"><div class="pinfo"><span class="pname">Prof. Johnny Braga de Oliveira</span><span class="pplat">🎓 Braga Treinamentos · clique para acessar a plataforma</span></div></a>
+<h1>Aula de Macros</h1>
+<p>Olá, turma! Hoje eu vou ensinar vocês a fazer o Excel trabalhar sozinho. Macro é uma gravação dos seus cliques que o Excel repete quando vocês pedirem, em menos de um segundo.</p>
+<p>Eu fiz tudo de verdade no Excel e tirei um print de <strong>cada clique</strong>. O <b style="color:var(--mark)">círculo vermelho</b> mostra onde clicar. Vamos do zero: ligar a guia certa, cuidar da segurança, gravar, salvar, ler o código, criar botões e ver o que muda no Excel Online.</p>
+<a class="dl-btn" href="Aula de Macros.xlsm" download><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Baixar planilha da aula (.xlsm)</a>
+<div class="dl-info">📁 Aula de Macros.xlsm · 117 KB · Requer Excel com macros habilitadas</div>
+<div class="dl-info" style="margin-top:6px">🌐 Acesse mais aulas em <a href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;text-decoration:none">bragatreinamentos.com.br</a></div>
 </div>
+<div class="ticket"><img src="img/m37.jpg" alt="Planilha de vendas com três botões de macro" loading="eager"><div class="cap">No fim, a planilha de vendas vai ter três botões que fazem o trabalho por vocês.</div></div>
+</header>
+<nav class="rail" aria-label="Partes da aula"><div class="label">Roteiro</div>
+<a href="#porque"><span>00</span>O que é macro</a>
+<a href="#parte1"><span>01</span>Ligar a guia Desenvolvedor</a>
+<a href="#parte2"><span>02</span>Entender a segurança das macros</a>
+<a href="#parte3"><span>03</span>Gravar a primeira macro</a>
+<a href="#parte4"><span>04</span>Salvar do jeito certo (.xlsm)</a>
+<a href="#parte5"><span>05</span>Rodar a macro</a>
+<a href="#parte6"><span>06</span>Espiar e escrever código VBA</a>
+<a href="#parte7"><span>07</span>Criar botões na planilha</a>
+<a href="#parte8"><span>08</span>E no Excel Online (no navegador)?</a>
+<div class="progress"><div style="font-size:.85rem">Passos feitos: <strong id="cnt">0</strong> de 38</div><div class="bar"><i id="barfill"></i></div></div>
+</nav>
+<main>
+<section class="why" id="porque">
+<div class="eyebrow">Antes de clicar</div>
+<h2>O que é uma macro e por que ela é útil?</h2>
+<p>Toda segunda-feira alguém da agência abre a planilha, filtra as canceladas, conta quantas são, soma o prejuízo e manda para o chefe. São uns 15 cliques, toda semana, sempre iguais. Uma macro faz esses 15 cliques sozinha, sem errar, com um botão.</p>
+<div class="reasons">
+<div><h3>Economiza tempo</h3><p>Tarefa repetida vira um clique. O que levava minutos leva menos de um segundo.</p></div>
+<div><h3>Não erra</h3><p>A macro faz sempre igual. Não esquece um filtro nem soma a coluna errada.</p></div>
+<div><h3>Qualquer um usa</h3><p>Com um botão na planilha, até quem não sabe Excel roda o processo.</p></div>
+<div><h3>Precisa de cuidado</h3><p>Macro é um programa. Pode ser usada para o mal, por isso o Excel bloqueia por padrão.</p></div>
+</div>
+<h2 style="font-size:1.5rem;margin-top:8px">Excel instalado ou Excel Online: o que dá e o que não dá</h2>
+<div class="tw"><table class="cmp">
+<tr><th>O que vocês querem fazer</th><th>Excel instalado (Windows)</th><th>Excel Online (navegador)</th></tr>
+<tr><td>Gravar macro VBA</td><td class="yes">Sim</td><td class="no">Não</td></tr>
+<tr><td>Rodar macro VBA</td><td class="yes">Sim</td><td class="no">Não. Ele abre o .xlsm, mas a macro não roda</td></tr>
+<tr><td>Editar código VBA (Alt+F11)</td><td class="yes">Sim</td><td class="no">Não existe editor VBA</td></tr>
+<tr><td>Abrir e editar os dados de um .xlsm</td><td class="yes">Sim</td><td class="yes">Sim, e a macro continua guardada no arquivo</td></tr>
+<tr><td>Botão que roda macro VBA</td><td class="yes">Sim</td><td class="no">O botão aparece, mas não funciona</td></tr>
+<tr><td>Scripts do Office (guia Automatizar)</td><td>Sim, em versões recentes com conta de trabalho/escola</td><td class="yes">Sim, com conta Microsoft 365 de trabalho ou escola</td></tr>
+<tr><td>Ligar com Power Automate (rodar sozinho todo dia)</td><td>Pelos Scripts do Office</td><td class="yes">Sim, pelos Scripts do Office</td></tr>
+</table></div>
+<p><strong>Por que o Excel Online não roda VBA?</strong> Porque o VBA foi criado nos anos 90 para rodar dentro do Windows, com acesso aos arquivos do computador. No navegador isso seria perigoso e não funciona em celular ou Mac do mesmo jeito. Por isso a Microsoft criou os Scripts do Office, que rodam na nuvem e não conseguem mexer no seu computador.</p>
+<div class="legend"><span><b>◯ Círculo</b> = clique aqui</span><span><b>▭ Retângulo</b> = olhe com atenção</span><span><b>botão DIREITO</b> = use o botão da direita do mouse</span></div>
+<p style="font-size:.92rem;color:var(--muted)">Toque em qualquer print para ver em tamanho grande. Marquem “Fiz este passo” para acompanhar o progresso (fica salvo só no seu navegador).</p>
+</section>
+<section class="part" id="parte1"><div class="part-head"><div class="eyebrow">Parte 1 de 8</div><h2>Ligar a guia Desenvolvedor</h2><p>Os botões de macro moram numa guia chamada Desenvolvedor. Na maioria dos computadores ela vem escondida, porque a Microsoft não quer que alguém mexa nisso sem saber. Então o primeiro trabalho de vocês é mostrar essa guia.</p></div>
+<article class="step" id="passo1"><div class="num">1<small>PASSO</small></div><div class="body">
+<h3>Clique em Arquivo</h3><p>Abram a planilha <strong>Aula3_Agencia_Viagens.xlsx</strong>. Lá no canto de cima, à esquerda, cliquem em <strong>Arquivo</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 1"><img src="img/m01.jpg" alt="Print do passo 1: Clique em Arquivo" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Reparem no menu de cima: se vocês já enxergam a palavra Desenvolvedor, a guia já está ligada. Podem pular para a Parte 2.</div>
+<label class="done"><input type="checkbox" id="ok1" data-step="1"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo2"><div class="num">2<small>PASSO</small></div><div class="body">
+<h3>Clique em Opções</h3><p>Abriu uma tela grande. Lá embaixo, no canto esquerdo, cliquem em <strong>Opções</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 2"><img src="img/m02.jpg" alt="Print do passo 2: Clique em Opções" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Em algumas telas pequenas, Opções fica escondido dentro de “Mais…”. Cliquem em Mais e depois em Opções.</div>
+<label class="done"><input type="checkbox" id="ok2" data-step="2"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo3"><div class="num">3<small>PASSO</small></div><div class="body">
+<h3>Clique em Personalizar Faixa de Opções</h3><p>Abriu a janela <strong>Opções do Excel</strong>. Na lista da esquerda, cliquem em <strong>Personalizar Faixa de Opções</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 3"><img src="img/m03.jpg" alt="Print do passo 3: Clique em Personalizar Faixa de Opções" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok3" data-step="3"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo4"><div class="num">4<small>PASSO</small></div><div class="body">
+<h3>Role a lista da direita para baixo</h3><p>Do lado direito tem a lista <strong>Guias Principais</strong> (caixa vermelha). Coloquem o mouse em cima dela e girem a rodinha para baixo.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 4"><img src="img/m04.jpg" alt="Print do passo 4: Role a lista da direita para baixo" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok4" data-step="4"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo5"><div class="num">5<small>PASSO</small></div><div class="body">
+<h3>Marque Desenvolvedor e clique em OK</h3><p>Achem a palavra <strong>Desenvolvedor</strong> e cliquem no quadradinho dela para aparecer o ✓.</p><p>No meu computador ela já estava marcada. No de vocês provavelmente vai estar vazia. Depois de marcar, cliquem em <strong>OK</strong>.</p><p>Eu aproveitei que a janela estava aberta e cliquei em <strong>Central de Confiabilidade</strong> (o outro círculo), porque quero mostrar uma coisa importante na Parte 2.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 5"><img src="img/m05.jpg" alt="Print do passo 5: Marque Desenvolvedor e clique em OK" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok5" data-step="5"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte2"><div class="part-head"><div class="eyebrow">Parte 2 de 8</div><h2>Entender a segurança das macros</h2><p>Macro é um programa escondido dentro da planilha. Um programa pode fazer coisas boas (filtrar, formatar, gerar relatório) e também coisas ruins (apagar arquivos, baixar vírus). Por isso o Excel tem uma central de segurança. Eu vou mostrar onde fica, mas a regra é: olhem e não mexam.</p></div>
+<article class="step" id="passo6"><div class="num">6<small>PASSO</small></div><div class="body">
+<h3>Abra as configurações da Central de Confiabilidade</h3><p>Na tela da Central de Confiabilidade, cliquem no botão <strong>Configurações da Central de Confiabilidade…</strong>.</p><p>Vejam o que a própria Microsoft escreve ali: <em>“Recomendamos que você não as altere.”</em> Eu concordo.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 6"><img src="img/m06.jpg" alt="Print do passo 6: Abra as configurações da Central de Confiabilidade" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok6" data-step="6"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo7"><div class="num">7<small>PASSO</small></div><div class="body">
+<h3>Barra de Mensagens: deixe ligada</h3><p>Abriu na página <strong>Barra de Mensagens</strong>. A opção marcada (caixa vermelha) faz o Excel mostrar um aviso amarelo quando um arquivo tem macro. Esse aviso é o que vai proteger vocês. Deixem como está.</p><p>Agora cliquem em <strong>Configurações de Macro</strong> na lista da esquerda.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 7"><img src="img/m07.jpg" alt="Print do passo 7: Barra de Mensagens: deixe ligada" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok7" data-step="7"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo8"><div class="num">8<small>PASSO</small></div><div class="body">
+<h3>Configurações de Macro: a opção certa</h3><p>Aqui estão as quatro opções. A certa é a que está marcada: <strong>Desabilitar macros VBA com notificação</strong>.</p><p>Traduzindo: o Excel bloqueia toda macro, mas pergunta para vocês se aquele arquivo é de confiança. Vocês decidem arquivo por arquivo.</p><p><strong>Nunca</strong> escolham a última, “Habilitar macros VBA”. Ela libera qualquer macro de qualquer arquivo, até de um anexo de e-mail estranho. O próprio Excel avisa: “código potencialmente perigoso pode ser executado”.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 8"><img src="img/m08.jpg" alt="Print do passo 8: Configurações de Macro: a opção certa" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok8" data-step="8"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo9"><div class="num">9<small>PASSO</small></div><div class="body">
+<h3>Locais Confiáveis: só para pastas suas</h3><p>Cliquem em <strong>Locais Confiáveis</strong>. São pastas onde o Excel roda macros sem perguntar. Dá para adicionar uma pasta sua com <strong>Adicionar novo local…</strong> (marcado), mas só façam isso com uma pasta onde apenas vocês colocam arquivos. <strong>Nunca</strong> adicionem Downloads nem Área de Trabalho.</p><p>Pronto, já vimos tudo. Cliquem em <strong>Cancelar</strong> nesta janela e de novo em <strong>Cancelar</strong> na janela de Opções. Assim nada muda.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 9"><img src="img/m09.jpg" alt="Print do passo 9: Locais Confiáveis: só para pastas suas" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok9" data-step="9"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte3"><div class="part-head"><div class="eyebrow">Parte 3 de 8</div><h2>Gravar a primeira macro</h2><p>Gravar uma macro é como apertar o REC de um gravador: o Excel assiste o que vocês fazem e transforma em código. Depois, com um clique, ele repete tudo sozinho. A nossa macro vai mostrar só as vendas canceladas.</p></div>
+<article class="step" id="passo10"><div class="num">10<small>PASSO</small></div><div class="body">
+<h3>Abra a aba Vendas e a guia Desenvolvedor</h3><p>Cliquem na aba <strong>Vendas</strong> lá embaixo. Depois cliquem na guia <strong>Desenvolvedor</strong> lá em cima.</p><p>O grupo <strong>Código</strong> (caixa vermelha) tem tudo o que vamos usar. Cliquem em <strong>Gravar Macro</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 10"><img src="img/m10.jpg" alt="Print do passo 10: Abra a aba Vendas e a guia Desenvolvedor" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok10" data-step="10"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo11"><div class="num">11<small>PASSO</small></div><div class="body">
+<h3>Conheça a janela Gravar macro</h3><p>Esta janela tem quatro partes (todas marcadas):</p><ol class="mini"><li><strong>Nome da macro</strong>: sem espaços e sem acento. Use LetrasJuntas, assim: FiltrarCanceladas.</li><li><strong>Tecla de atalho</strong>: uma letra para rodar a macro pelo teclado.</li><li><strong>Armazenar macro em</strong>: deixem “Esta pasta de trabalho”.</li><li><strong>Descrição</strong>: uma frase dizendo o que ela faz.</li></ol>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 11"><img src="img/m11.jpg" alt="Print do passo 11: Conheça a janela Gravar macro" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok11" data-step="11"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo12"><div class="num">12<small>PASSO</small></div><div class="body">
+<h3>Preencha e clique em OK</h3><p>Digitem <strong>FiltrarCanceladas</strong> no nome. Cliquem na caixinha do atalho e digitem <strong>K maiúsculo</strong> (com Shift). O atalho vira <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>K</kbd>.</p><p>Na descrição escrevam <strong>Mostra somente as vendas canceladas</strong>. Cliquem em <strong>OK</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 12"><img src="img/m12.jpg" alt="Print do passo 12: Preencha e clique em OK" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Usem sempre Ctrl+Shift+letra. Se usarem só Ctrl+C, por exemplo, a macro “rouba” o atalho de copiar.</div>
+<label class="done"><input type="checkbox" id="ok12" data-step="12"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo13"><div class="num">13<small>PASSO</small></div><div class="body">
+<h3>Atenção: está gravando!</h3><p>A partir de agora, <strong>tudo</strong> o que vocês fizerem será gravado. Vejam os sinais (marcados): o botão virou <strong>Parar gravação</strong> e apareceu um quadradinho na barra de baixo.</p><p>Cliquem na <strong>setinha do filtro</strong> do título <strong>Status</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 13"><img src="img/m13.jpg" alt="Print do passo 13: Atenção: está gravando!" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Não cliquem em nada à toa enquanto grava. Cada clique errado vira uma linha de código.</div>
+<label class="done"><input type="checkbox" id="ok13" data-step="13"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo14"><div class="num">14<small>PASSO</small></div><div class="body">
+<h3>Desmarque Confirmada</h3><p>Abriu a lista do filtro. Cliquem no quadradinho de <strong>Confirmada</strong> para tirar o ✓.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 14"><img src="img/m14.jpg" alt="Print do passo 14: Desmarque Confirmada" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok14" data-step="14"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo15"><div class="num">15<small>PASSO</small></div><div class="body">
+<h3>Só Cancelada marcada: clique em OK</h3><p>Agora só <strong>Cancelada</strong> está marcada. Cliquem em <strong>OK</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 15"><img src="img/m15.jpg" alt="Print do passo 15: Só Cancelada marcada: clique em OK" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok15" data-step="15"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo16"><div class="num">16<small>PASSO</small></div><div class="body">
+<h3>Pare a gravação</h3><p>A tabela mostra só as canceladas e a barra de baixo diz <strong>175 de 1380 registros localizados</strong>.</p><p>Agora o passo mais esquecido: cliquem em <strong>Parar gravação</strong> (o círculo). Se não pararem, o Excel continua gravando tudo.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 16"><img src="img/m16.jpg" alt="Print do passo 16: Pare a gravação" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok16" data-step="16"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte4"><div class="part-head"><div class="eyebrow">Parte 4 de 8</div><h2>Salvar do jeito certo (.xlsm)</h2><p>Este é o erro número 1 da turma. Um arquivo .xlsx comum não guarda macros. Se vocês salvarem como .xlsx, a macro some para sempre. O tipo certo termina em .xlsm (o “m” é de macro).</p></div>
+<article class="step" id="passo17"><div class="num">17<small>PASSO</small></div><div class="body">
+<h3>Aperte F12 e abra a lista Tipo</h3><p>Para testar de verdade, eu primeiro limpei o filtro (guia <strong>Dados</strong> → <strong>Limpar</strong>). Depois apertei <kbd>F12</kbd>, que abre <strong>Salvar como</strong>.</p><p>Vejam que o Tipo está como <strong>Pasta de Trabalho do Excel (*.xlsx)</strong>. Cliquem nessa caixa.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 17"><img src="img/m19.jpg" alt="Print do passo 17: Aperte F12 e abra a lista Tipo" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Se F12 não funcionar no seu notebook, use Fn + F12, ou Arquivo → Salvar como → Procurar.</div>
+<label class="done"><input type="checkbox" id="ok17" data-step="17"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo18"><div class="num">18<small>PASSO</small></div><div class="body">
+<h3>Escolha Pasta de Trabalho Habilitada para Macro</h3><p>Na lista, cliquem em <strong>Pasta de Trabalho Habilitada para Macro do Excel (*.xlsm)</strong>. É a segunda opção.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 18"><img src="img/m20.jpg" alt="Print do passo 18: Escolha Pasta de Trabalho Habilitada para Macro" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok18" data-step="18"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo19"><div class="num">19<small>PASSO</small></div><div class="body">
+<h3>Confira o .xlsm e clique em Salvar</h3><p>O nome mudou sozinho para <strong>Aula de Macros.xlsm</strong>. Cliquem em <strong>Salvar</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 19"><img src="img/m21.jpg" alt="Print do passo 19: Confira o .xlsm e clique em Salvar" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Se aparecer uma mensagem dizendo que “os recursos a seguir não podem ser salvos em pastas de trabalho sem macro”, é porque vocês estão salvando como .xlsx. Cliquem em Não e voltem para o tipo .xlsm.</div>
+<label class="done"><input type="checkbox" id="ok19" data-step="19"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo20"><div class="num">20<small>PASSO</small></div><div class="body">
+<h3>Feche, abra de novo e veja o aviso amarelo</h3><p>Fechem o arquivo e abram de novo. Apareceu a faixa amarela <strong>AVISO DE SEGURANÇA – As macros foram desabilitadas</strong>. É a Central de Confiabilidade trabalhando, do jeito que configuramos.</p><p>Como <strong>este arquivo foi vocês que fizeram</strong>, podem clicar em <strong>Habilitar Conteúdo</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 20"><img src="img/m22.jpg" alt="Print do passo 20: Feche, abra de novo e veja o aviso amarelo" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Arquivo que veio da internet ou de e-mail pode mostrar uma faixa vermelha: “A Microsoft bloqueou a execução de macros”. Isso é proteção. Só desbloqueie (botão direito no arquivo → Propriedades → Desbloquear) se você tiver certeza de quem mandou.</div>
+<label class="done"><input type="checkbox" id="ok20" data-step="20"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte5"><div class="part-head"><div class="eyebrow">Parte 5 de 8</div><h2>Rodar a macro</h2><p>Agora a parte divertida: ver o Excel trabalhando sozinho. Existem três jeitos de rodar uma macro, e eu vou mostrar todos.</p></div>
+<article class="step" id="passo21"><div class="num">21<small>PASSO</small></div><div class="body">
+<h3>Jeito 1: botão Macros</h3><p>Na guia <strong>Desenvolvedor</strong>, cliquem em <strong>Macros</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 21"><img src="img/m17.jpg" alt="Print do passo 21: Jeito 1: botão Macros" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok21" data-step="21"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo22"><div class="num">22<small>PASSO</small></div><div class="body">
+<h3>Escolha a macro e clique em Executar</h3><p>Abriu a lista de macros. Cliquem em <strong>FiltrarCanceladas</strong> e depois em <strong>Executar</strong>.</p><p>Vejam que a descrição que vocês escreveram aparece embaixo.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 22"><img src="img/m23.jpg" alt="Print do passo 22: Escolha a macro e clique em Executar" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Jeito 2: o atalho Ctrl+Shift+K faz a mesma coisa sem abrir janela nenhuma.</div>
+<label class="done"><input type="checkbox" id="ok22" data-step="22"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo23"><div class="num">23<small>PASSO</small></div><div class="body">
+<h3>Mágica: a tabela foi filtrada</h3><p>Em menos de um segundo, a tabela mostrou só as <strong>175 vendas canceladas</strong>. Vocês não clicaram em filtro nenhum: a macro clicou por vocês.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 23"><img src="img/m24.jpg" alt="Print do passo 23: Mágica: a tabela foi filtrada" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok23" data-step="23"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte6"><div class="part-head"><div class="eyebrow">Parte 6 de 8</div><h2>Espiar e escrever código VBA</h2><p>Toda macro gravada vira texto numa linguagem chamada VBA (Visual Basic for Applications). Ler esse texto ajuda a entender o que a macro faz e a consertar quando ela erra.</p></div>
+<article class="step" id="passo24"><div class="num">24<small>PASSO</small></div><div class="body">
+<h3>Abra o código: Macros → Editar</h3><p>Cliquem em <strong>Macros</strong> de novo, escolham <strong>FiltrarCanceladas</strong> e cliquem em <strong>Editar</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 24"><img src="img/m26.jpg" alt="Print do passo 24: Abra o código: Macros → Editar" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Atalho para abrir o editor direto: Alt + F11.</div>
+<label class="done"><input type="checkbox" id="ok24" data-step="24"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo25"><div class="num">25<small>PASSO</small></div><div class="body">
+<h3>Leia o código gravado</h3><p>Abriu o editor do VBA. À esquerda (caixa vermelha) fica o <strong>Projeto</strong>: as planilhas e a pasta <strong>Módulos</strong>, onde mora o <strong>Módulo1</strong> com a nossa macro.</p><p>À direita está o código. Vamos ler juntos:</p><ul class="mini"><li><code>Sub FiltrarCanceladas()</code>: começo da macro.</li><li>Linhas verdes com apóstrofo ( ' ): comentários. O Excel ignora; são anotações para gente.</li><li><code>AutoFilter Field:=11, Criteria1:="Cancelada"</code>: filtra a 11ª coluna (Status) pela palavra Cancelada. Foi exatamente o que vocês fizeram com o mouse!</li><li><code>End Sub</code>: fim da macro.</li></ul>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 25"><img src="img/m27.jpg" alt="Print do passo 25: Leia o código gravado" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok25" data-step="25"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo26"><div class="num">26<small>PASSO</small></div><div class="body">
+<h3>Escreva duas macros novas</h3><p>Cliquem depois do <code>End Sub</code>, deem dois <kbd>Enter</kbd> e digitem o código da caixa vermelha. São duas macros:</p><pre class="formula">Sub MostrarTodas()
+' Tira o filtro e mostra todas as vendas
+ActiveSheet.ListObjects("tVendas").AutoFilter.ShowAllData
+Range("A1").Select
+End Sub
+
+Sub ResumoCanceladas()
+' Conta as vendas canceladas e mostra o valor perdido
+Dim qtd As Long, valor As Double
+qtd = Application.WorksheetFunction.CountIf(Range("tVendas[Status]"), "Cancelada")
+valor = Application.WorksheetFunction.SumIf(Range("tVendas[Status]"), "Cancelada", Range("tVendas[Valor_Venda]"))
+MsgBox "Vendas canceladas: " &amp; qtd &amp; vbCrLf &amp; "Valor perdido: " &amp; Format(valor, "R$ #,##0.00"), vbInformation, "Resumo"
+End Sub</pre><p><code>MostrarTodas</code> desfaz o filtro. <code>ResumoCanceladas</code> conta as canceladas (é o CONT.SE em inglês: <code>CountIf</code>), soma o dinheiro perdido (<code>SumIf</code> = SOMASE) e mostra uma janelinha com a resposta.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 26"><img src="img/m28.jpg" alt="Print do passo 26: Escreva duas macros novas" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> No VBA as funções têm nome em inglês, e o separador é vírgula, não ponto e vírgula.</div>
+<label class="done"><input type="checkbox" id="ok26" data-step="26"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo27"><div class="num">27<small>PASSO</small></div><div class="body">
+<h3>Rode pelo botão Play</h3><p>Cliquem em qualquer lugar <strong>dentro</strong> da macro ResumoCanceladas (primeiro círculo) e depois no <strong>triângulo verde</strong> ▶ da barra (segundo círculo). Isso é o Jeito 3.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 27"><img src="img/m29.jpg" alt="Print do passo 27: Rode pelo botão Play" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Atalho para rodar dentro do editor: F5.</div>
+<label class="done"><input type="checkbox" id="ok27" data-step="27"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo28"><div class="num">28<small>PASSO</small></div><div class="body">
+<h3>A resposta aparece</h3><p>O Excel voltou para a planilha e mostrou a janela <strong>Resumo</strong>: <strong>175 vendas canceladas</strong> e <strong>R$ 1.947.445,00</strong> de valor perdido. Cliquem em <strong>OK</strong>.</p><p>Isso é algo que o gravador sozinho não consegue fazer. Por isso vale a pena aprender um pouquinho de VBA.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 28"><img src="img/m30.jpg" alt="Print do passo 28: A resposta aparece" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok28" data-step="28"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte7"><div class="part-head"><div class="eyebrow">Parte 7 de 8</div><h2>Criar botões na planilha</h2><p>Ninguém da agência vai abrir o menu Macros. Eles querem um botão grande escrito o que faz. Vamos criar três.</p></div>
+<article class="step" id="passo29"><div class="num">29<small>PASSO</small></div><div class="body">
+<h3>Inserir → Botão (Controle de Formulário)</h3><p>Na guia <strong>Desenvolvedor</strong>, cliquem em <strong>Inserir</strong>. Em <strong>Controles de Formulário</strong> (caixa vermelha), cliquem no primeiro desenho, o <strong>Botão</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 29"><img src="img/m31.jpg" alt="Print do passo 29: Inserir → Botão (Controle de Formulário)" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Usem o botão de Controles de Formulário, não o de Controles ActiveX. O de formulário é mais simples e funciona melhor.</div>
+<label class="done"><input type="checkbox" id="ok29" data-step="29"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo30"><div class="num">30<small>PASSO</small></div><div class="body">
+<h3>Desenhe o botão arrastando</h3><p>O cursor virou uma cruz +. Cliquem numa célula vazia ao lado da tabela, segurem o botão do mouse e <strong>arrastem</strong> para formar um retângulo, onde está a caixa vermelha. Soltem.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 30"><img src="img/m32.jpg" alt="Print do passo 30: Desenhe o botão arrastando" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok30" data-step="30"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo31"><div class="num">31<small>PASSO</small></div><div class="body">
+<h3>Escolha a macro do botão</h3><p>Abriu a janela <strong>Atribuir macro</strong>. Cliquem na macro que o botão vai rodar e depois em <strong>OK</strong>.</p><p>Para trocar o texto “Botão 1”: cliquem com o botão direito no botão → <strong>Editar Texto</strong>, apaguem e escrevam o nome novo.</p><p>Façam três botões: <strong>Canceladas</strong> (FiltrarCanceladas), <strong>Mostrar todas</strong> (MostrarTodas) e <strong>Resumo</strong> (ResumoCanceladas).</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 31"><img src="img/m33.jpg" alt="Print do passo 31: Escolha a macro do botão" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> Para mexer num botão sem rodar a macro, cliquem nele com o botão direito. O clique normal roda a macro.</div>
+<label class="done"><input type="checkbox" id="ok31" data-step="31"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo32"><div class="num">32<small>PASSO</small></div><div class="body">
+<h3>Os três botões prontos</h3><p>Aí estão os três botões. Cliquem em <strong>Mostrar todas</strong> para testar.</p><p>Eu descobri um problema: quando o filtro esconde linhas, os botões <strong>somem junto</strong>, porque eles estão “colados” nas células. O próximo passo resolve isso.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 32"><img src="img/m34.jpg" alt="Print do passo 32: Os três botões prontos" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok32" data-step="32"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo33"><div class="num">33<small>PASSO</small></div><div class="body">
+<h3>Botão direito → Formatar controle</h3><p>Cliquem com o <strong>botão direito</strong> em cima de um botão. No menu aparecem <strong>Editar Texto</strong> e <strong>Atribuir macro</strong> (úteis!). Cliquem em <strong>Formatar controle…</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 33"><img src="img/m35.jpg" alt="Print do passo 33: Botão direito → Formatar controle" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok33" data-step="33"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo34"><div class="num">34<small>PASSO</small></div><div class="body">
+<h3>Propriedades → Não mover ou dimensionar com células</h3><p>Cliquem na aba <strong>Propriedades</strong>, marquem <strong>Não mover ou dimensionar com células</strong> e cliquem em <strong>OK</strong>. Façam isso nos três botões.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 34"><img src="img/m36.jpg" alt="Print do passo 34: Propriedades → Não mover ou dimensionar com células" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok34" data-step="34"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo35"><div class="num">35<small>PASSO</small></div><div class="body">
+<h3>Agora os botões ficam no lugar</h3><p>Cliquem em <strong>Canceladas</strong>: a tabela filtra e os botões continuam lá (caixas vermelhas). Cliquem em <strong>Mostrar todas</strong> e depois em <strong>Resumo</strong>. Tudo funcionando.</p><p>Salvem com <kbd>Ctrl</kbd>+<kbd>B</kbd>. Como o arquivo já é .xlsm, as macros ficam guardadas.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 35"><img src="img/m37.jpg" alt="Print do passo 35: Agora os botões ficam no lugar" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok35" data-step="35"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="part" id="parte8"><div class="part-head"><div class="eyebrow">Parte 8 de 8</div><h2>E no Excel Online (no navegador)?</h2><p>Aqui tem uma surpresa para muita gente: o Excel Online (excel.cloud.microsoft, ou pelo OneDrive/Teams) não roda macros VBA. Ele tem outra ferramenta, chamada Scripts do Office, que fica na guia Automatizar. Os prints abaixo são do Excel instalado, que tem a mesma guia e o mesmo gravador do Excel Online.</p></div>
+<article class="step" id="passo36"><div class="num">36<small>PASSO</small></div><div class="body">
+<h3>A guia Automatizar</h3><p>Na guia <strong>Automatizar</strong> (caixa vermelha) ficam os <strong>Scripts do Office</strong>. No Excel Online ela está no mesmo lugar, no menu de cima.</p><p>Os scripts ficam salvos no <strong>OneDrive</strong> da sua conta, e não dentro da planilha como o VBA.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 36"><img src="img/m38.jpg" alt="Print do passo 36: A guia Automatizar" loading="lazy" width="1456" height="772"></button></figure>
+<div class="tip"><strong>Dica do professor:</strong> A guia Automatizar só aparece em contas Microsoft 365 de trabalho ou de escola (como a conta da escola). Em conta pessoal ela costuma não aparecer.</div>
+<label class="done"><input type="checkbox" id="ok36" data-step="36"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo37"><div class="num">37<small>PASSO</small></div><div class="body">
+<h3>Novo Script → Criar usando Gravação</h3><p>Cliquem em <strong>Novo Script</strong>. Há duas opções: <strong>Criar no Editor de Código</strong> (escrever o código) e <strong>Criar usando Gravação</strong>. Cliquem em <strong>Criar usando Gravação</strong>.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 37"><img src="img/m39.jpg" alt="Print do passo 37: Novo Script → Criar usando Gravação" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok37" data-step="37"> Fiz este passo</label>
+</div></article>
+<article class="step" id="passo38"><div class="num">38<small>PASSO</small></div><div class="body">
+<h3>O painel Gravar Ações</h3><p>Abriu o painel <strong>Gravar Ações</strong>. Ele grava igual ao gravador de macros: vocês fazem as ações, depois clicam em <strong>Parar</strong>, e o Excel cria um script.</p><p>Notem o <strong>Modo Absoluto / Modo Relativo</strong>. No absoluto ele repete sempre nas mesmas células; no relativo ele repete a partir da célula onde vocês estiverem.</p><p>O script é escrito em <strong>TypeScript</strong>, a mesma família do JavaScript, e não em VBA.</p>
+<figure><button type="button" class="zoom" aria-label="Ampliar print do passo 38"><img src="img/m40.jpg" alt="Print do passo 38: O painel Gravar Ações" loading="lazy" width="1456" height="772"></button></figure>
+<label class="done"><input type="checkbox" id="ok38" data-step="38"> Fiz este passo</label>
+</div></article>
+</section>
+<section class="why" id="regras">
+<div class="eyebrow">Combinado da turma</div>
+<h2>O que fazer e o que não fazer com macros</h2>
+<div class="rules">
+<div><h3 class="yes">Façam</h3><ul>
+<li>Salvem como <strong>.xlsm</strong> sempre que tiver macro.</li>
+<li>Deixem a segurança em <strong>“Desabilitar com notificação”</strong>.</li>
+<li>Cliquem em Habilitar Conteúdo <strong>só</strong> em arquivo feito por vocês ou por alguém de confiança.</li>
+<li>Façam uma <strong>cópia de segurança</strong> antes de rodar macro nova. Macro não tem Ctrl+Z: o que ela faz, não volta.</li>
+<li>Deem nomes claros às macros e escrevam a descrição.</li>
+<li>Usem atalhos com <strong>Ctrl+Shift</strong>.</li>
+</ul></div>
+<div><h3 class="no">Não façam</h3><ul>
+<li>Não escolham <strong>“Habilitar macros VBA”</strong> na Central de Confiabilidade.</li>
+<li>Não habilitem macros de anexo de e-mail ou arquivo baixado sem saber de quem é. É o jeito mais comum de vírus entrar.</li>
+<li>Não coloquem Downloads ou Área de Trabalho como Local Confiável.</li>
+<li>Não salvem como .xlsx um arquivo com macro: ela some.</li>
+<li>Não esperem que a macro funcione no Excel Online, no celular ou no Google Planilhas.</li>
+<li>Não usem macro para o que uma fórmula ou tabela dinâmica já resolve.</li>
+</ul></div>
+</div>
+</section>
+<section class="end">
+<div class="eyebrow" style="color:var(--accent-soft)">Desafio final</div>
+<h2>Agora é com vocês</h2>
+<ul>
+<li>Gravem uma macro <strong>FiltrarWhatsApp</strong> que mostra só as vendas do canal WhatsApp e coloquem um botão para ela.</li>
+<li>Copiem a macro ResumoCanceladas e criem uma <strong>ResumoConfirmadas</strong>. Dica: troquem só a palavra entre aspas.</li>
+<li>Gravem uma macro com <strong>Usar Referências Relativas</strong> ligado e outra desligado. Rodem as duas em células diferentes e expliquem a diferença.</li>
+<li>Quem tiver conta da escola: abram a planilha no Excel Online, cliquem em Automatizar → Gravar Ações e gravem o mesmo filtro como Script do Office.</li>
+</ul>
+</section>
+<section class="next-aula">
+<div class="eyebrow">📅 Braga Treinamentos · Excel Avançado</div>
+<h2>Quer mais? A próxima aula já está chegando!</h2>
+<p>Acompanhe a plataforma Braga Treinamentos e fique por dentro da data de lançamento da próxima aula do curso.</p>
+<div><a class="next-btn" href="../aula9/" target="_blank">⏰ Ver próxima aula</a></div>
+<p style="font-size:.82rem">Ou acesse diretamente <a href="https://bragatreinamentos.com.br/" target="_blank" rel="noopener" style="color:#f5c518;text-decoration:none;font-weight:600">bragatreinamentos.com.br</a></p>
+</section>
+</main></div>
+<div class="lightbox" id="lb" hidden><img alt="" id="lbimg"></div>
 <script>
-var target=new Date(2026,10,1,8,0,0);
-function tick(){var now=new Date(),diff=target-now;if(diff<=0){document.querySelector('.countdown').innerHTML='<p style="color:var(--accent);font-size:1.2rem;font-weight:700">A aula come�a agora! ??</p>';return;}var d=Math.floor(diff/864e5),h=Math.floor((diff%864e5)/36e5),m=Math.floor((diff%36e5)/6e4),s=Math.floor((diff%6e4)/1e3);document.getElementById('d').textContent=String(d).padStart(2,'0');document.getElementById('h').textContent=String(h).padStart(2,'0');document.getElementById('m').textContent=String(m).padStart(2,'0');document.getElementById('s').textContent=String(s).padStart(2,'0');}
-tick();setInterval(tick,1000);
+(function(){
+  var total=38;
+  var boxes=[].slice.call(document.querySelectorAll('.done input'));
+  var saved={};
+  try{saved=JSON.parse(localStorage.getItem('aula-macros-passos')||'{}')||{};}catch(e){}
+  function upd(){var c=boxes.filter(function(b){return b.checked}).length;
+    document.getElementById('cnt').textContent=c;document.getElementById('barfill').style.width=(c/total*100)+'%';}
+  boxes.forEach(function(b){ if(saved[b.dataset.step]) b.checked=true;
+    b.addEventListener('change',function(){saved[b.dataset.step]=b.checked;
+      try{localStorage.setItem('aula-macros-passos',JSON.stringify(saved))}catch(e){} upd();});});
+  upd();
+  var lb=document.getElementById('lb'),li=document.getElementById('lbimg');
+  document.querySelectorAll('button.zoom').forEach(function(btn){btn.addEventListener('click',function(){
+    var im=btn.querySelector('img');li.src=im.src;li.alt=im.alt;lb.hidden=false;});});
+  lb.addEventListener('click',function(){lb.hidden=true});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.hidden=true});
+})();
 </script>
 </body></html>
