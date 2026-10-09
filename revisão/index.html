@@ -1,0 +1,475 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Revisão de Excel Avançado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: planilha como metáfora — sumário fixo à esquerda (como as abas), conteúdo em coluna única com "células" amarelas (entrada) e verdes (resultado), as mesmas cores da planilha da aula */
+:root{
+  --bg:#F6F8F4; --surface:#FFFFFF; --fg:#18221D; --muted:#56635C; --line:#D9E1DB;
+  --accent:#1D6A4C; --accent-ink:#FFFFFF; --in:#FFF2CC; --in-ink:#5C4A00; --out:#E2EFDA; --out-ink:#1D4D2F;
+  --code:#EDF2EE; --warn:#B3261E;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111714; --surface:#18201C; --fg:#E4EBE6; --muted:#9BA8A0; --line:#2A3530;
+  --accent:#5CC197; --accent-ink:#0E1A14; --in:#4A3E15; --in-ink:#FBE7A6; --out:#203A2A; --out-ink:#BFE6C9;
+  --code:#1E2722; --warn:#FF8A80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111714; --surface:#18201C; --fg:#E4EBE6; --muted:#9BA8A0; --line:#2A3530;
+  --accent:#5CC197; --accent-ink:#0E1A14; --in:#4A3E15; --in-ink:#FBE7A6; --out:#203A2A; --out-ink:#BFE6C9;
+  --code:#1E2722; --warn:#FF8A80; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.6 var(--f-body);
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:100% 28px,96px 100%;background-attachment:fixed}
+.wrap{display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px;max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:32px 80px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 0;font-size:15px}
+nav.toc b{display:block;padding:0 16px 8px;font:700 12px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+nav.toc a{display:flex;gap:10px;padding:5px 16px;color:var(--fg);text-decoration:none;border-left:3px solid transparent}
+nav.toc a span{font:600 12px var(--f-mono);color:var(--muted);min-width:22px}
+nav.toc a:hover,nav.toc a:focus-visible{background:var(--code);border-left-color:var(--accent);outline:none}
+main{min-width:0;display:grid;gap:28px}
+header.hero{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:28px 28px 24px}
+.namebox{display:inline-flex;font:600 13px var(--f-mono);border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-bottom:14px}
+.namebox i{font-style:normal;padding:3px 10px;background:var(--code);color:var(--muted);border-right:1px solid var(--line)}
+.namebox em{font-style:normal;padding:3px 10px}
+h1{font:800 clamp(30px,5vw,46px)/1.05 var(--f-display);margin:0 0 10px;text-wrap:balance;letter-spacing:-.01em}
+h2{font:700 clamp(24px,3.4vw,32px)/1.15 var(--f-display);margin:0;text-wrap:balance}
+h3{font:700 19px/1.3 var(--f-display);margin:0}
+p{margin:0}
+.lead{color:var(--muted);max-width:65ch}
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;margin-top:18px;font-size:15px}
+.chip{display:inline-flex;align-items:center;gap:8px}
+.sw{width:30px;height:18px;border:1px solid var(--line);border-radius:2px}
+.sw.in{background:var(--in)} .sw.out{background:var(--out)}
+.files{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:20px}
+.file{border:1px dashed var(--line);border-radius:4px;padding:10px 14px;font-size:15px}
+.file code{font:600 13px var(--f-mono);color:var(--accent);word-break:break-all}
+section.topic{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:26px 28px;display:grid;gap:18px;scroll-margin-top:20px}
+.tag{font:600 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.syntax{background:var(--code);border-radius:4px;padding:12px 14px;font:14px/1.6 var(--f-mono);overflow-x:auto}
+.args{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px;font-size:15px}
+.args dt{font:600 13px var(--f-mono);color:var(--accent)}
+.args dd{margin:0;color:var(--muted)}
+.ex{border-top:1px solid var(--line);padding-top:18px;display:grid;gap:12px}
+.ex ol{margin:0;padding-left:22px;display:grid;gap:4px}
+.cells{display:flex;flex-wrap:wrap;gap:8px;font:14px var(--f-mono)}
+.cell{padding:3px 10px;border:1px solid var(--line);border-radius:2px}
+.cell.in{background:var(--in);color:var(--in-ink)} .cell.out{background:var(--out);color:var(--out-ink);font-weight:600}
+.f{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--code)}
+.f .fx{font:italic 600 14px var(--f-mono);padding:10px 12px;border-right:1px solid var(--line);color:var(--muted)}
+.f code{flex:1;min-width:0;padding:10px 12px;font:14px/1.5 var(--f-mono);overflow-x:auto;white-space:pre}
+.f button{border:0;border-left:1px solid var(--line);background:var(--surface);color:var(--fg);font:600 13px var(--f-body);padding:0 14px;cursor:pointer}
+.f button:hover,.f button:focus-visible{background:var(--accent);color:var(--accent-ink);outline:none}
+figure{margin:0;display:grid;gap:6px}
+figure button{padding:0;border:1px solid var(--line);border-radius:4px;overflow:hidden;cursor:zoom-in;background:none;display:block;width:100%}
+figure img{display:block;width:100%;height:auto}
+figcaption{font-size:14px;color:var(--muted)}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.tip{border-left:3px solid var(--accent);padding:4px 0 4px 14px;font-size:16px;color:var(--muted)}
+.tip b{color:var(--fg)}
+table.act{width:100%;border-collapse:collapse;font-size:16px}
+.tblwrap{overflow-x:auto}
+table.act th,table.act td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+table.act th{background:var(--accent);color:var(--accent-ink);font-weight:600}
+table.act td:first-child{font:600 14px var(--f-mono);text-align:center;width:44px}
+table.act td.ans{background:var(--in);min-width:110px}
+details{border:1px solid var(--line);border-radius:4px;padding:12px 16px;background:var(--surface)}
+summary{cursor:pointer;font-weight:700}
+details .gab{display:grid;gap:10px;margin-top:12px}
+details .gab div{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;font-size:15px}
+details .gab code{font:13px var(--f-mono);background:var(--code);padding:2px 6px;border-radius:3px;word-break:break-all}
+.plan{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.plan div{border:1px solid var(--line);border-radius:4px;padding:10px 12px;font-size:15px;font-variant-numeric:tabular-nums}
+.plan b{display:block;font:600 13px var(--f-mono);color:var(--accent)}
+dialog{border:0;padding:0;max-width:min(96vw,1460px);background:transparent}
+dialog::backdrop{background:rgba(0,0,0,.82)}
+dialog img{display:block;max-width:100%;max-height:92vh;border-radius:4px}
+dialog form button{position:fixed;top:14px;right:18px;font:700 16px var(--f-body);padding:8px 14px;border-radius:4px;border:0;cursor:pointer;background:var(--surface);color:var(--fg)}
+@media (max-width:860px){.wrap{grid-template-columns:minmax(0,1fr)}nav.toc{position:static}.two{grid-template-columns:minmax(0,1fr)}section.topic,header.hero{padding:20px 18px}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+<nav class="toc" aria-label="Sumário">
+  <b>Abas da aula</b>
+  <a href="#procv"><span>01</span>PROCV</a>
+  <a href="#procx"><span>02</span>PROCX</a>
+  <a href="#indice"><span>03</span>ÍNDICE + CORRESP</a>
+  <a href="#se"><span>04</span>SE e SEERRO</a>
+  <a href="#somase"><span>05</span>SOMASE</a>
+  <a href="#somases"><span>06</span>SOMASES</a>
+  <a href="#contse"><span>07</span>CONT.SE e MÉDIASE</a>
+  <a href="#graficos"><span>08</span>Gráficos</a>
+  <a href="#sparklines"><span>09</span>Minigráficos</a>
+  <a href="#fc"><span>10</span>Formatação condicional</a>
+  <a href="#atividades"><span>11</span>Atividades</a>
+</nav>
+
+<main>
+<header class="hero">
+  <div class="namebox"><i>A1</i><em>Revisão de Excel Avançado</em></div>
+  <h1>Revisão de Excel Avançado</h1>
+  <p class="lead">Aula prática para fazer junto: cada função tem dois exemplos resolvidos passo a passo, com prints reais do Excel. No final, 14 atividades para os alunos treinarem sozinhos.</p>
+  <div class="legend">
+    <span class="chip"><span class="sw in"></span>Célula amarela: valor de entrada (pode trocar)</span>
+    <span class="chip"><span class="sw out"></span>Célula verde: onde vai a fórmula</span>
+  </div>
+  <div class="files">
+    <div class="file"><b>Para os alunos</b><br><code>Revisao_Excel_ALUNO.xlsx</code><br>Resultados em branco, sem gráficos: eles constroem junto.</div>
+    <div class="file"><b>Para o professor</b><br><code>Revisao_Excel_PROFESSOR.xlsx</code><br>Tudo resolvido, com gráficos e minigráficos prontos.</div>
+  </div>
+  <div class="plan" style="margin-top:18px">
+    <div><b>0–10 min</b>Abrir a planilha e explicar entradas × resultados</div>
+    <div><b>10–40 min</b>Buscas: PROCV, PROCX, ÍNDICE+CORRESP</div>
+    <div><b>40–70 min</b>Lógica e agregação: SE, SOMASE(S), CONT.SE, MÉDIASE</div>
+    <div><b>70–90 min</b>Gráficos, minigráficos e formatação condicional</div>
+    <div><b>90 min +</b>Atividades individuais</div>
+  </div>
+</header>
+
+<!-- PROCV -->
+<section class="topic" id="procv">
+  <span class="tag">Aba PROCV</span>
+  <h2>PROCV: procura vertical</h2>
+  <p>Procura um valor na <b>primeira coluna</b> de uma tabela e devolve o que estiver em outra coluna da mesma linha.</p>
+  <div class="syntax">=PROCV(valor_procurado; matriz_tabela; nº_índice_coluna; [procurar_intervalo])</div>
+  <dl class="args">
+    <dt>valor_procurado</dt><dd>o que você quer achar (ex.: o código P04)</dd>
+    <dt>matriz_tabela</dt><dd>a tabela inteira, com $ para travar ao arrastar</dd>
+    <dt>nº_índice_coluna</dt><dd>a coluna que você quer de volta, contando a partir de 1</dd>
+    <dt>procurar_intervalo</dt><dd>FALSO = correspondência exata (use quase sempre)</dd>
+  </dl>
+  <div class="ex">
+    <h3>Exemplo 1 · Qual o preço do produto?</h3>
+    <div class="cells"><span class="cell in">H5 = P04</span><span class="cell out">H6 = R$ 1.399,00</span></div>
+    <ol>
+      <li>Clique em <b>H6</b> (célula verde).</li>
+      <li>Digite a fórmula abaixo. A tabela de produtos está em A5:E12 e o preço é a <b>4ª coluna</b>.</li>
+      <li>Troque o código em H5 para P01 e veja o preço mudar sozinho.</li>
+    </ol>
+    <div class="f"><span class="fx">fx</span><code>=PROCV(H5;$A$5:$E$12;4;FALSO)</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/01_procv_ex1.jpg" alt="Excel com a célula H6 selecionada mostrando PROCV na barra de fórmulas e o resultado R$ 1.399,00" loading="lazy"></button><figcaption>Barra de fórmulas mostrando o PROCV em H6.</figcaption></figure>
+  </div>
+  <div class="ex">
+    <h3>Exemplo 2 · Nome do produto, sem mostrar #N/D</h3>
+    <div class="cells"><span class="cell in">H10 = P99</span><span class="cell out">H11 = Não cadastrado</span></div>
+    <ol>
+      <li>Em H11, faça o PROCV da coluna 2 (Produto).</li>
+      <li>Como P99 não existe, o PROCV puro dá <b>#N/D</b>. Envolva com <b>SEERRO</b> para mostrar uma mensagem amigável.</li>
+    </ol>
+    <div class="f"><span class="fx">fx</span><code>=SEERRO(PROCV(H10;$A$5:$E$12;2;FALSO);"Não cadastrado")</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/02_procv_ex2.jpg" alt="Excel mostrando SEERRO com PROCV e o resultado Não cadastrado" loading="lazy"></button><figcaption>SEERRO trocando o erro pela mensagem.</figcaption></figure>
+  </div>
+</section>
+
+<!-- PROCX -->
+<section class="topic" id="procx">
+  <span class="tag">Aba PROCX · Excel 365 e 2021</span>
+  <h2>PROCX: a busca moderna</h2>
+  <p>Você informa separadamente <b>onde procurar</b> e <b>o que devolver</b>. Por isso não precisa contar colunas e consegue buscar para a esquerda.</p>
+  <div class="syntax">=PROCX(pesquisa_valor; pesquisa_matriz; matriz_retorno; [se_não_encontrada])</div>
+  <div class="ex">
+    <h3>Exemplo 1 · Estoque pelo nome do produto</h3>
+    <div class="cells"><span class="cell in">H5 = Headset</span><span class="cell out">H6 = 18</span></div>
+    <ol>
+      <li>Procure o nome na coluna B (Produto) e devolva a coluna E (Estoque).</li>
+      <li>O 4º argumento já trata o “não encontrado”, sem precisar de SEERRO.</li>
+    </ol>
+    <div class="f"><span class="fx">fx</span><code>=PROCX(H5;B5:B12;E5:E12;"Não encontrado")</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/03_procx_ex1.jpg" alt="PROCX retornando estoque 18 para Headset" loading="lazy"></button><figcaption>PROCX em H6: procura em B, devolve E.</figcaption></figure>
+  </div>
+  <div class="ex">
+    <h3>Exemplo 2 · Busca à esquerda: código pelo nome</h3>
+    <div class="cells"><span class="cell in">H10 = Monitor 27"</span><span class="cell out">H11 = P04</span></div>
+    <ol>
+      <li>O código está na coluna A, à esquerda do nome. O PROCV não consegue fazer isso.</li>
+      <li>No PROCX basta inverter: procura em B, devolve A.</li>
+    </ol>
+    <div class="f"><span class="fx">fx</span><code>=PROCX(H10;B5:B12;A5:A12;"Não encontrado")</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/04_procx_ex2.jpg" alt="PROCX retornando o código P04" loading="lazy"></button><figcaption>Busca para a esquerda com PROCX.</figcaption></figure>
+  </div>
+  <p class="tip"><b>Pergunta para a turma:</b> o que acontece se trocarmos H10 por um produto que não existe? E se usássemos PROCV aqui?</p>
+</section>
+
+<!-- INDICE -->
+<section class="topic" id="indice">
+  <span class="tag">Aba INDICE_CORRESP</span>
+  <h2>ÍNDICE + CORRESP: busca em linha e coluna</h2>
+  <p><b>CORRESP</b> descobre a posição de um valor; <b>ÍNDICE</b> pega o que está naquela posição. Funciona em qualquer versão do Excel.</p>
+  <div class="syntax">=ÍNDICE(matriz; CORRESP(valor; intervalo; 0); [CORRESP(valor_coluna; cabeçalhos; 0)])</div>
+  <div class="ex">
+    <h3>Exemplo 1 · Categoria do produto</h3>
+    <div class="cells"><span class="cell in">H5 = Webcam HD</span><span class="cell out">H6 = Acessório</span></div>
+    <ol>
+      <li>CORRESP acha em que linha está “Webcam HD” dentro de B5:B12 (resposta: 8).</li>
+      <li>ÍNDICE devolve o 8º item de C5:C12.</li>
+    </ol>
+    <div class="f"><span class="fx">fx</span><code>=ÍNDICE(C5:C12;CORRESP(H5;B5:B12;0))</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/05_indice_ex1.jpg" alt="ÍNDICE com CORRESP retornando Acessório" loading="lazy"></button><figcaption>ÍNDICE + CORRESP em H6.</figcaption></figure>
+  </div>
+  <div class="ex">
+    <h3>Exemplo 2 · Linha e coluna escolhidas pelo usuário</h3>
+    <div class="cells"><span class="cell in">H10 = P02</span><span class="cell in">H11 = Estoque</span><span class="cell out">H12 = 7</span></div>
+    <ol>
+      <li>Primeiro CORRESP: qual linha tem o código P02.</li>
+      <li>Segundo CORRESP: qual coluna do cabeçalho (A4:E4) se chama “Estoque”.</li>
+      <li>Troque H11 para <b>Preço</b> ou <b>Categoria</b>: a mesma fórmula responde.</li>
+    </ol>
+    <div class="f"><span class="fx">fx</span><code>=ÍNDICE(A5:E12;CORRESP(H10;A5:A12;0);CORRESP(H11;A4:E4;0))</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/06_indice_ex2.jpg" alt="ÍNDICE com dois CORRESP retornando 7" loading="lazy"></button><figcaption>Busca bidimensional em H12.</figcaption></figure>
+  </div>
+</section>
+
+<!-- SE -->
+<section class="topic" id="se">
+  <span class="tag">Aba SE_SEERRO</span>
+  <h2>SE: decisões na planilha</h2>
+  <div class="syntax">=SE(teste_lógico; valor_se_verdadeiro; valor_se_falso)</div>
+  <div class="ex">
+    <h3>Exemplo 1 · Bateu a meta?</h3>
+    <ol>
+      <li>Em D5, compare Vendas (B5) com Meta (C5).</li>
+      <li>Dê Enter e arraste a alça de preenchimento até D8.</li>
+    </ol>
+    <div class="f"><span class="fx">fx</span><code>=SE(B5>=C5;"Bateu a meta";"Abaixo")</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/07_se_ex1.jpg" alt="Coluna Status preenchida com SE" loading="lazy"></button><figcaption>D5 com o SE simples.</figcaption></figure>
+  </div>
+  <div class="ex">
+    <h3>Exemplo 2 · Comissão com SE aninhado</h3>
+    <p>Regra: passou 10% da meta ganha 10% de comissão; bateu a meta ganha 5%; abaixo, nada.</p>
+    <div class="f"><span class="fx">fx</span><code>=SE(B5>=C5*1,1;B5*10%;SE(B5>=C5;B5*5%;0))</code><button type="button">Copiar</button></div>
+    <div class="cells"><span class="cell out">Ana = R$ 1.413,20</span><span class="cell out">Bruno = R$ 0,00</span><span class="cell out">Carla = R$ 0,00</span><span class="cell out">Diego = R$ 747,58</span></div>
+    <figure><button type="button"><img src="img/08_se_ex2.jpg" alt="Coluna Comissão calculada com SE aninhado" loading="lazy"></button><figcaption>E5 com o SE dentro do SE.</figcaption></figure>
+  </div>
+  <p class="tip"><b>Ordem importa:</b> teste primeiro a condição mais difícil (110% da meta). Se testar “bateu a meta” primeiro, ninguém chega aos 10%.</p>
+</section>
+
+<!-- SOMASE -->
+<section class="topic" id="somase">
+  <span class="tag">Aba SOMASE</span>
+  <h2>SOMASE: soma com um critério</h2>
+  <div class="syntax">=SOMASE(intervalo_critério; critério; [intervalo_soma])</div>
+  <div class="ex">
+    <h3>Exemplo 1 · Total vendido por um vendedor</h3>
+    <div class="cells"><span class="cell in">I5 = Ana</span><span class="cell out">I6 = R$ 14.132,00</span></div>
+    <ol>
+      <li>O critério (Ana) é procurado na coluna B (Vendedor).</li>
+      <li>Somam-se os valores correspondentes da coluna F (Total).</li>
+    </ol>
+    <div class="f"><span class="fx">fx</span><code>=SOMASE(B5:B19;I5;F5:F19)</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/09_somase_ex1.jpg" alt="SOMASE somando vendas da Ana" loading="lazy"></button><figcaption>SOMASE em I6.</figcaption></figure>
+  </div>
+  <div class="ex">
+    <h3>Exemplo 2 · Somar só as vendas acima de um valor</h3>
+    <div class="cells"><span class="cell in">I10 = 3000</span><span class="cell out">I11 = R$ 29.393,00</span></div>
+    <ol>
+      <li>Quando o critério é uma comparação, ele vai entre aspas e é juntado à célula com <b>&amp;</b>.</li>
+      <li>Como o critério e a soma estão na mesma coluna, o 3º argumento pode ser omitido.</li>
+    </ol>
+    <div class="f"><span class="fx">fx</span><code>=SOMASE(F5:F19;"&gt;"&amp;I10)</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/10_somase_ex2.jpg" alt="SOMASE com critério maior que" loading="lazy"></button><figcaption>Critério “&gt;”&amp;I10.</figcaption></figure>
+  </div>
+</section>
+
+<!-- SOMASES -->
+<section class="topic" id="somases">
+  <span class="tag">Aba SOMASES</span>
+  <h2>SOMASES: soma com vários critérios</h2>
+  <p>Atenção à ordem: no SOMASES, o <b>intervalo da soma vem primeiro</b>. Depois vêm os pares intervalo + critério.</p>
+  <div class="syntax">=SOMASES(intervalo_soma; intervalo_critério1; critério1; intervalo_critério2; critério2; …)</div>
+  <div class="ex">
+    <h3>Exemplo 1 · Vendedor e região</h3>
+    <div class="cells"><span class="cell in">I5 = Ana</span><span class="cell in">I6 = Sul</span><span class="cell out">I7 = R$ 8.834,00</span></div>
+    <div class="f"><span class="fx">fx</span><code>=SOMASES(F5:F19;B5:B19;I5;C5:C19;I6)</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/11_somases_ex1.jpg" alt="SOMASES com vendedor e região" loading="lazy"></button><figcaption>Dois critérios ao mesmo tempo.</figcaption></figure>
+  </div>
+  <div class="ex">
+    <h3>Exemplo 2 · Categoria entre duas datas</h3>
+    <div class="cells"><span class="cell in">I11 = Notebook</span><span class="cell in">I12 = 01/02/2026</span><span class="cell in">I13 = 31/03/2026</span><span class="cell out">I14 = R$ 21.595,00</span></div>
+    <ol>
+      <li>A coluna de datas (A) entra <b>duas vezes</b>: uma com “&gt;=” data inicial, outra com “&lt;=” data final.</li>
+      <li>Mude as datas para ver o total de outros períodos.</li>
+    </ol>
+    <div class="f"><span class="fx">fx</span><code>=SOMASES(F5:F19;D5:D19;I11;A5:A19;"&gt;="&amp;I12;A5:A19;"&lt;="&amp;I13)</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/12_somases_ex2.jpg" alt="SOMASES com intervalo de datas" loading="lazy"></button><figcaption>Período com duas condições na mesma coluna.</figcaption></figure>
+  </div>
+</section>
+
+<!-- CONT.SE -->
+<section class="topic" id="contse">
+  <span class="tag">Aba CONTSE_MEDIASE</span>
+  <h2>CONT.SE e MÉDIASE</h2>
+  <p>Mesma lógica do SOMASE: CONT.SE <b>conta</b> as linhas que atendem ao critério e MÉDIASE tira a <b>média</b> delas.</p>
+  <div class="ex">
+    <h3>Exemplo 1 · Quantas vendas a região fez</h3>
+    <div class="cells"><span class="cell in">I5 = Norte</span><span class="cell out">I6 = 5</span></div>
+    <div class="f"><span class="fx">fx</span><code>=CONT.SE(C5:C19;I5)</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/13_contse_ex1.jpg" alt="CONT.SE contando vendas da região Norte" loading="lazy"></button><figcaption>CONT.SE em I6.</figcaption></figure>
+  </div>
+  <div class="ex">
+    <h3>Exemplo 2 · Ticket médio por categoria</h3>
+    <div class="cells"><span class="cell in">I10 = Monitor</span><span class="cell out">I11 = R$ 1.918,20</span></div>
+    <div class="f"><span class="fx">fx</span><code>=MÉDIASE(D5:D19;I10;F5:F19)</code><button type="button">Copiar</button></div>
+    <figure><button type="button"><img src="img/14_mediase_ex2.jpg" alt="MÉDIASE calculando média de Monitor" loading="lazy"></button><figcaption>MÉDIASE em I11. Na mesma aba há um bônus com CONT.SES.</figcaption></figure>
+  </div>
+</section>
+
+<!-- GRÁFICOS -->
+<section class="topic" id="graficos">
+  <span class="tag">Aba Graficos</span>
+  <h2>Gráficos a partir de um resumo</h2>
+  <p>As tabelinhas de A4:B8 e A11:B14 já são calculadas com SOMASE. Se os dados de venda mudarem, os gráficos mudam junto.</p>
+  <div class="ex">
+    <h3>Exemplo 1 · Colunas: vendas por vendedor</h3>
+    <ol>
+      <li>Selecione <b>A4:B8</b> (inclua o cabeçalho).</li>
+      <li><b>Inserir › Gráficos › Coluna</b> e escolha <b>Coluna Agrupada</b>.</li>
+      <li>Arraste o gráfico para o lado da tabela.</li>
+      <li>Clique no <b>+</b> ao lado do gráfico e marque <b>Rótulos de Dados</b>.</li>
+      <li>Clique no título e troque “Total” por “Vendas por vendedor”.</li>
+    </ol>
+    <div class="two">
+      <figure><button type="button"><img src="img/15_graf_menu_colunas.jpg" alt="Menu Inserir Coluna aberto com A4:B8 selecionado" loading="lazy"></button><figcaption>Passo 2: menu de colunas.</figcaption></figure>
+      <figure><button type="button"><img src="img/16_graf_elementos.jpg" alt="Painel Elementos do Gráfico com Rótulos de Dados marcado" loading="lazy"></button><figcaption>Passo 4: Elementos do Gráfico.</figcaption></figure>
+    </div>
+  </div>
+  <div class="ex">
+    <h3>Exemplo 2 · Pizza: participação por categoria</h3>
+    <ol>
+      <li>Selecione <b>A11:B14</b>.</li>
+      <li><b>Inserir › Gráficos › Pizza</b> e escolha <b>Pizza 2D</b>.</li>
+      <li>Em <b>Design do Gráfico › Layout Rápido</b>, escolha o <b>Layout 1</b> (categoria + porcentagem).</li>
+    </ol>
+    <div class="two">
+      <figure><button type="button"><img src="img/17_graf_menu_pizza.jpg" alt="Menu Inserir Pizza aberto" loading="lazy"></button><figcaption>Passo 2: menu de pizza.</figcaption></figure>
+      <figure><button type="button"><img src="img/18_graf_layout_rapido.jpg" alt="Menu Layout Rápido aberto" loading="lazy"></button><figcaption>Passo 3: Layout Rápido.</figcaption></figure>
+    </div>
+    <figure><button type="button"><img src="img/19_graf_final.jpg" alt="Gráfico de colunas e gráfico de pizza prontos" loading="lazy"></button><figcaption>Resultado: os dois gráficos lado a lado (antes de renomear o título da coluna).</figcaption></figure>
+  </div>
+  <p class="tip"><b>Quando usar cada um:</b> colunas para comparar valores; pizza só para partes de um todo, com poucas fatias.</p>
+</section>
+
+<!-- SPARKLINES -->
+<section class="topic" id="sparklines">
+  <span class="tag">Aba Sparklines</span>
+  <h2>Minigráficos (sparklines)</h2>
+  <p>Um gráfico pequeno dentro da célula, ótimo para mostrar a tendência de cada linha de uma tabela.</p>
+  <div class="ex">
+    <h3>Exemplo 1 · Minigráfico de linha</h3>
+    <ol>
+      <li>Selecione <b>F5:F8</b> (onde os minigráficos vão ficar).</li>
+      <li><b>Inserir › Minigráficos › Linha</b>.</li>
+      <li>Em <b>Intervalo de dados</b>, selecione <b>B5:E8</b> e clique em OK.</li>
+      <li>Na guia <b>Minigráfico</b>, marque <b>Ponto Alto</b> e <b>Ponto Baixo</b>.</li>
+    </ol>
+    <figure><button type="button"><img src="img/21_spark_dialogo.jpg" alt="Caixa Criar Minigráficos com intervalo B5:E8" loading="lazy"></button><figcaption>Passo 3: caixa Criar Minigráficos. No print o destino foi I5:I8; na aula, use F5:F8.</figcaption></figure>
+  </div>
+  <div class="ex">
+    <h3>Exemplo 2 · Minigráfico de coluna</h3>
+    <ol>
+      <li>Selecione <b>G5:G8</b> e use <b>Inserir › Minigráficos › Coluna</b> com o mesmo intervalo B5:E8.</li>
+      <li>Aumente a altura das linhas para o minigráfico ficar legível.</li>
+    </ol>
+    <figure><button type="button"><img src="img/20_spark_resultado.jpg" alt="Minigráficos de linha e coluna prontos para os quatro vendedores" loading="lazy"></button><figcaption>Linha (F) e coluna (G): o mês mais forte de cada vendedor salta aos olhos.</figcaption></figure>
+  </div>
+</section>
+
+<!-- FC -->
+<section class="topic" id="fc">
+  <span class="tag">Aba Formatacao_Cond</span>
+  <h2>Formatação condicional</h2>
+  <div class="ex">
+    <h3>Exemplo 1 · Estoque zerado em vermelho</h3>
+    <ol>
+      <li>Selecione <b>E5:E12</b>.</li>
+      <li><b>Página Inicial › Formatação Condicional › Regras de Realce das Células › É Igual a…</b></li>
+      <li>Digite <b>0</b> e escolha “Preenchimento Vermelho Claro e Texto Vermelho Escuro”.</li>
+    </ol>
+    <figure><button type="button"><img src="img/22_fc_menu.jpg" alt="Menu Formatação Condicional aberto" loading="lazy"></button><figcaption>O menu de Formatação Condicional.</figcaption></figure>
+  </div>
+  <div class="ex">
+    <h3>Exemplo 2 · Barras de dados no preço</h3>
+    <ol>
+      <li>Selecione <b>D5:D12</b>.</li>
+      <li><b>Formatação Condicional › Barras de Dados</b> e escolha uma cor.</li>
+    </ol>
+    <figure><button type="button"><img src="img/23_fc_resultado.jpg" alt="Tabela com barras de dados no preço e estoque zero destacado" loading="lazy"></button><figcaption>Barras no preço e o 0 destacado no estoque.</figcaption></figure>
+  </div>
+</section>
+
+<!-- ATIVIDADES -->
+<section class="topic" id="atividades">
+  <span class="tag">Aba Atividades</span>
+  <h2>Atividades para treinar</h2>
+  <p>Use a aba <b>Atividades</b>. A tabela de vendas está em <b>A4:F19</b> e a de produtos em <b>H4:L12</b>. Escreva cada fórmula na coluna amarela “Sua resposta”.</p>
+  <figure><button type="button"><img src="img/24_atividades.jpg" alt="Aba Atividades com as duas tabelas de dados" loading="lazy"></button><figcaption>As tabelas da aba Atividades.</figcaption></figure>
+  <div class="tblwrap">
+  <table class="act">
+    <thead><tr><th>Nº</th><th>Enunciado</th><th>Resultado</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><b>PROCV:</b> preço do produto P06</td><td class="ans"></td></tr>
+      <tr><td>2</td><td><b>PROCX:</b> nome do produto P03 (se não achar, mostrar “Inexistente”)</td><td class="ans"></td></tr>
+      <tr><td>3</td><td><b>PROCX:</b> código do produto “Mouse sem fio” (busca à esquerda)</td><td class="ans"></td></tr>
+      <tr><td>4</td><td><b>ÍNDICE + CORRESP:</b> estoque do “Notebook Dell”</td><td class="ans"></td></tr>
+      <tr><td>5</td><td><b>SOMASE:</b> total vendido por Bruno</td><td class="ans"></td></tr>
+      <tr><td>6</td><td><b>SOMASE:</b> soma das vendas com Qtd maior que 3</td><td class="ans"></td></tr>
+      <tr><td>7</td><td><b>SOMASES:</b> total da Carla na região Sul</td><td class="ans"></td></tr>
+      <tr><td>8</td><td><b>SOMASES:</b> total de Acessório em abril/2026</td><td class="ans"></td></tr>
+      <tr><td>9</td><td><b>CONT.SE:</b> quantas vendas de Notebook?</td><td class="ans"></td></tr>
+      <tr><td>10</td><td><b>MÉDIASE:</b> média das vendas da região Norte</td><td class="ans"></td></tr>
+      <tr><td>11</td><td><b>SE:</b> na coluna M da tabela de produtos, escreva “Repor” se o estoque for menor que 10, senão “OK”</td><td class="ans"></td></tr>
+      <tr><td>12</td><td><b>Gráfico:</b> monte um resumo por região com SOMASE e crie um gráfico de colunas</td><td class="ans"></td></tr>
+      <tr><td>13</td><td><b>Minigráficos:</b> monte uma tabela Categoria × Mês (jan a abr) com SOMASES e crie minigráficos de linha</td><td class="ans"></td></tr>
+      <tr><td>14</td><td><b>Formatação condicional:</b> pinte de verde as vendas acima de R$ 3.000</td><td class="ans"></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="tip"><b>Desafio extra:</b> na atividade 8, transforme o mês em uma célula de entrada (amarela) para o aluno escolher qualquer mês.</p>
+
+  <details>
+    <summary>Gabarito do professor</summary>
+    <div class="gab">
+      <div><b>1</b><span><code>=PROCV("P06";H5:L12;4;FALSO)</code> → R$ 349,00</span></div>
+      <div><b>2</b><span><code>=PROCX("P03";H5:H12;I5:I12;"Inexistente")</code> → Monitor 24"</span></div>
+      <div><b>3</b><span><code>=PROCX("Mouse sem fio";I5:I12;H5:H12)</code> → P05</span></div>
+      <div><b>4</b><span><code>=ÍNDICE(L5:L12;CORRESP("Notebook Dell";I5:I12;0))</code> → 7</span></div>
+      <div><b>5</b><span><code>=SOMASE(B5:B19;"Bruno";F5:F19)</code> → R$ 14.888,00</span></div>
+      <div><b>6</b><span><code>=SOMASE(E5:E19;"&gt;3";F5:F19)</code> → R$ 6.402,80</span></div>
+      <div><b>7</b><span><code>=SOMASES(F5:F19;B5:B19;"Carla";C5:C19;"Sul")</code> → R$ 4.093,00</span></div>
+      <div><b>8</b><span><code>=SOMASES(F5:F19;D5:D19;"Acessório";A5:A19;"&gt;=01/04/2026";A5:A19;"&lt;=30/04/2026")</code> → R$ 2.373,80</span></div>
+      <div><b>9</b><span><code>=CONT.SE(D5:D19;"Notebook")</code> → 5</span></div>
+      <div><b>10</b><span><code>=MÉDIASE(C5:C19;"Norte";F5:F19)</code> → R$ 3.654,36</span></div>
+      <div><b>11</b><span>Em M5: <code>=SE(L5&lt;10;"Repor";"OK")</code> e arrastar até M12 → “Repor” em P02, P04 e P08</span></div>
+      <div><b>12</b><span><code>=SOMASE($C$5:$C$19;"Sul";$F$5:$F$19)</code> etc. → Sul R$ 19.620,00 · Norte R$ 18.271,80 · Leste R$ 7.495,00 → Inserir › Coluna Agrupada</span></div>
+      <div><b>13</b><span>Ex.: <code>=SOMASES($F$5:$F$19;$D$5:$D$19;"Notebook";$A$5:$A$19;"&gt;=01/01/2026";$A$5:$A$19;"&lt;=31/01/2026")</code>. Valores (jan–abr): Notebook 7.798 · 8.498 · 13.097 · 0 | Monitor 4.096 · 0 · 4.596 · 899 | Acessório 899 · 3.130 · 0 · 2.373,80</span></div>
+      <div><b>14</b><span>Selecionar F5:F19 › Formatação Condicional › Realçar › <b>É Maior do que…</b> 3000 → 5 células ficam verdes</span></div>
+    </div>
+  </details>
+</section>
+</main>
+</div>
+
+<dialog id="zoom" aria-label="Print ampliado"><form method="dialog"><button type="submit">Fechar ✕</button></form><img alt=""></dialog>
+
+<script>
+document.querySelectorAll('.f button').forEach(function(b){
+  b.addEventListener('click',function(){
+    var code=b.parentNode.querySelector('code'), t=code.textContent;
+    function ok(){b.textContent='Copiado';setTimeout(function(){b.textContent='Copiar'},1500)}
+    function fallback(){var r=document.createRange();r.selectNodeContents(code);var s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selecionado'}
+    try{navigator.clipboard.writeText(t).then(ok,fallback)}catch(e){fallback()}
+  });
+});
+var dlg=document.getElementById('zoom'), big=dlg.querySelector('img');
+document.querySelectorAll('figure button').forEach(function(b){
+  b.addEventListener('click',function(){var i=b.querySelector('img');big.src=i.src;big.alt=i.alt;try{dlg.showModal()}catch(e){}});
+});
+dlg.addEventListener('click',function(e){if(e.target===dlg||e.target===big)dlg.close()});
+</script>
+
+</body></html>
