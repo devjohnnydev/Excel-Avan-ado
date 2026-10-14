@@ -1,0 +1,102 @@
+CÓDIGO M COMPLETO · AULA 13 (AULA FINAL) · Prof. Johnny Braga
+Como usar: Power Query > Página Inicial > Nova Fonte > Outras Fontes > Consulta Nula > Editor Avançado > cole o código > renomeie a consulta com o nome indicado.
+Ordem: stgLoja, stgOnline, dProdutos e dVendedores (pelo Navegador, tabelas tbProdutos e tbVendedores de Cadastros.xlsx), fVendas, Auditoria_SemCadastro, Realizado_Mensal, Resumo_Loja.
+Troque C:\Users\Aluno\Documents pelo caminho da sua pasta.
+
+================================================================================
+Consulta: stgLoja
+================================================================================
+let
+    // 1. Fonte: abre o arquivo da loja (troque o caminho se a pasta for outra)
+    Fonte = Excel.Workbook(File.Contents("C:\Users\Aluno\Documents\Aula13_Final\Fontes\Vendas_Loja.xlsx"), null, true),
+    // 2. Navegação: escolhe a TABELA tbLoja (não a planilha)
+    tbLoja_Table = Fonte{[Item="tbLoja",Kind="Table"]}[Data],
+    // 3. Tipos: Data como data e Preço como decimal (passo 5.5)
+    #"Tipo Alterado" = Table.TransformColumnTypes(tbLoja_Table,{{"ID_Venda", type text}, {"Data", type date}, {"ID_Vendedor", type text}, {"Cod_Produto", type text}, {"Quantidade", Int64.Type}, {"Preço Unitário", type number}}),
+    // 4. Coluna fixa que identifica o canal (passo 5.6)
+    #"Personalização Adicionada" = Table.AddColumn(#"Tipo Alterado", "Canal", each "Loja Física"),
+    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"Canal", type text}})
+in
+    #"Tipo Alterado1"
+
+================================================================================
+Consulta: stgOnline
+================================================================================
+let
+    // 1. Lê o CSV: separador ; e codificação UTF-8 (65001) — passo 5.8
+    Fonte = Csv.Document(File.Contents("C:\Users\Aluno\Documents\Aula13_Final\Fontes\Vendas_Online.csv"),[Delimiter=";", Columns=6, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Pedido", type text}, {"Data_Pedido", type date}, {"UF", type text}, {"SKU", type text}, {"Qtd", Int64.Type}, {"Valor_Unit", type number}}),
+    // 2. Remove as linhas vazias filtrando a chave (passo 5.9)
+    #"Linhas Filtradas" = Table.SelectRows(#"Tipo Alterado", each [Pedido] <> null and [Pedido] <> ""),
+    // 3. Mesmos nomes da loja para o Acrescentar funcionar (passo 5.10)
+    #"Colunas Renomeadas" = Table.RenameColumns(#"Linhas Filtradas",{{"Pedido", "ID_Venda"}, {"Data_Pedido", "Data"}, {"SKU", "Cod_Produto"}, {"Qtd", "Quantidade"}, {"Valor_Unit", "Preço Unitário"}}),
+    // 4. p006 -> P006: a mesclagem diferencia maiúsculas (passo 5.11)
+    #"Texto em Maiúscula" = Table.TransformColumns(#"Colunas Renomeadas",{{"Cod_Produto", Text.Upper, type text}}),
+    // 5. Vendedor e canal fixos do e-commerce (passo 5.12)
+    #"Personalização Adicionada" = Table.AddColumn(#"Texto em Maiúscula", "ID_Vendedor", each "V07"),
+    #"Personalização Adicionada1" = Table.AddColumn(#"Personalização Adicionada", "Canal", each "Online"),
+    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Personalização Adicionada1",{{"ID_Vendedor", type text}, {"Canal", type text}})
+in
+    #"Tipo Alterado1"
+
+================================================================================
+Consulta: fVendas
+================================================================================
+let
+    // 1. ACRESCENTAR: empilha loja (300) + online (240) = 540 linhas (módulo 6)
+    Fonte = Table.Combine({stgLoja, stgOnline}),
+    // 2. MESCLAR com o cadastro de produtos = PROCX (passos 7.1 e 7.2)
+    #"Consultas Mescladas" = Table.NestedJoin(Fonte, {"Cod_Produto"}, dProdutos, {"Cod_Produto"}, "dProdutos", JoinKind.LeftOuter),
+    #"dProdutos Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "dProdutos", {"Produto", "Categoria", "Custo Unitário"}, {"Produto", "Categoria", "Custo Unitário"}),
+    // 3. MESCLAR com o cadastro de vendedores (passo 7.7)
+    #"Consultas Mescladas1" = Table.NestedJoin(#"dProdutos Expandido", {"ID_Vendedor"}, dVendedores, {"ID_Vendedor"}, "dVendedores", JoinKind.LeftOuter),
+    #"dVendedores Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas1", "dVendedores", {"Vendedor", "Região"}, {"Vendedor", "Região"}),
+    // 4. Colunas calculadas (módulo 8)
+    #"Personalização Adicionada" = Table.AddColumn(#"dVendedores Expandido", "Faturamento", each [Quantidade] * [Preço Unitário]),
+    #"Personalização Adicionada1" = Table.AddColumn(#"Personalização Adicionada", "Lucro", each [Faturamento] - [Quantidade] * [Custo Unitário]),
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Personalização Adicionada1",{{"Faturamento", Currency.Type}, {"Lucro", Currency.Type}}),
+    #"Mês Inserido" = Table.AddColumn(#"Tipo Alterado", "Mês", each Date.Month([Data]), Int64.Type),
+    #"Nome do Mês Inserido" = Table.AddColumn(#"Mês Inserido", "Nome do Mês", each Date.MonthName([Data]), type text),
+    // 5. Coluna Condicional = SE aninhado (passo 8.5)
+    #"Condição Adicionada" = Table.AddColumn(#"Nome do Mês Inserido", "Faixa", each if [Faturamento] >= 3000 then "Grande" else if [Faturamento] >= 1000 then "Média" else "Pequena"),
+    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Condição Adicionada",{{"Faixa", type text}})
+in
+    #"Tipo Alterado1"
+
+================================================================================
+Consulta: Auditoria_SemCadastro
+================================================================================
+let
+    // Antiesquerda: vendas cujo Cod_Produto NÃO existe em dProdutos (passo 7.3)
+    Fonte = Table.NestedJoin(fVendas, {"Cod_Produto"}, dProdutos, {"Cod_Produto"}, "dProdutos", JoinKind.LeftAnti)
+in
+    Fonte
+
+================================================================================
+Consulta: Realizado_Mensal
+================================================================================
+let
+    Fonte = fVendas,
+    // AGRUPAR POR = SOMASES de todas as combinações vendedor x mês (passo 9.2)
+    #"Linhas Agrupadas" = Table.Group(Fonte, {"ID_Vendedor", "Mês"}, {{"Realizado", each List.Sum([Faturamento]), type nullable number}, {"Qtd Vendas", each Table.RowCount(_), Int64.Type}}),
+    // Meta entra DEPOIS de agrupar: uma por vendedor por mês (passo 9.4)
+    #"Consultas Mescladas" = Table.NestedJoin(#"Linhas Agrupadas", {"ID_Vendedor"}, dVendedores, {"ID_Vendedor"}, "dVendedores", JoinKind.LeftOuter),
+    #"dVendedores Expandido" = Table.ExpandTableColumn(#"Consultas Mescladas", "dVendedores", {"Vendedor", "Meta Mensal"}, {"Vendedor", "Meta Mensal"}),
+    #"Personalização Adicionada" = Table.AddColumn(#"dVendedores Expandido", "% Atingido", each [Realizado] / [Meta Mensal]),
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Personalização Adicionada",{{"% Atingido", Percentage.Type}, {"Realizado", Currency.Type}})
+in
+    #"Tipo Alterado"
+
+================================================================================
+Consulta: Resumo_Loja
+================================================================================
+let
+    Fonte = fVendas,
+    #"Linhas Filtradas" = Table.SelectRows(Fonte, each ([Canal] = "Loja Física")),
+    #"Linhas Agrupadas" = Table.Group(#"Linhas Filtradas", {"Categoria", "Mês"}, {{"Faturamento", each List.Sum([Faturamento]), type nullable number}}),
+    // DINAMIZAR: os meses (1, 2, 3) viram colunas — mesma matriz da SOMASES (passo 9.5)
+    #"Coluna Dinamizada" = Table.Pivot(Table.TransformColumnTypes(#"Linhas Agrupadas", {{"Mês", type text}}, "pt-BR"), List.Distinct(Table.TransformColumnTypes(#"Linhas Agrupadas", {{"Mês", type text}}, "pt-BR")[Mês]), "Mês", "Faturamento", List.Sum)
+in
+    #"Coluna Dinamizada"
+
